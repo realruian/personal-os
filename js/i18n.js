@@ -5,15 +5,15 @@
 window.I18N = {
   zh: {
     title: '田睿安 · 个人站',
-    intro: '田睿安，美团 AI 产品工程专家。',
-    artifacts_title: 'About Me',
-    lab_title: 'Lab',
+    intro: '田睿安<br>美团 AI 产品工程专家<br>前阿里、京东高级设计师',
+    artifacts_title: 'Ships',
+    lab_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
     ],
     lab: [
-      { label: '实验项目', href: '#' }
+      { label: '即将到来…', href: '#' }
     ],
     howto:
       '<div class="entry-text">' +
@@ -35,7 +35,6 @@ window.I18N = {
       '</div>',
     social: [
       { label: 'xiaohongshu.com/田睿安', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
-      { label: 'x.com/realruian', href: 'https://x.com/realruian' },
       { label: 'github.com/realruian', href: 'https://github.com/realruian' },
       { label: 'mail/realruian@gmail.com', href: 'mailto:realruian@gmail.com' }
     ],
@@ -43,15 +42,15 @@ window.I18N = {
   },
   en: {
     title: 'Ruian Tian · Personal Site',
-    intro: 'Ruian Tian — AI Product Engineer at Meituan.',
-    artifacts_title: 'About Me',
-    lab_title: 'Lab',
+    intro: 'Ruian Tian<br>AI Product Engineer at Meituan<br>Previously Senior Designer at Alibaba & JD',
+    artifacts_title: 'Ships',
+    lab_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
     ],
     lab: [
-      { label: 'experiment', href: '#' }
+      { label: 'coming soon…', href: '#' }
     ],
     howto:
       '<div class="entry-text">' +
@@ -73,7 +72,6 @@ window.I18N = {
       '</div>',
     social: [
       { label: 'xiaohongshu.com/ruian', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
-      { label: 'x.com/realruian', href: 'https://x.com/realruian' },
       { label: 'github.com/realruian', href: 'https://github.com/realruian' },
       { label: 'mail/realruian@gmail.com', href: 'mailto:realruian@gmail.com' }
     ],
