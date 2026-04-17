@@ -7,13 +7,9 @@ window.I18N = {
     title: '田睿安 · 个人站',
     intro: '田睿安<span class="intro-sub">美团 AI 产品工程专家<br>前阿里、京东高级设计师</span>',
     artifacts_title: 'Ships',
-    lab_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
-    ],
-    lab: [
-      { label: '即将到来…', href: '#' }
     ],
     howto:
       '<div class="entry-text">' +
@@ -38,13 +34,9 @@ window.I18N = {
     title: 'Ruian Tian · Personal Site',
     intro: 'Ruian Tian<span class="intro-sub">AI Product Engineer at Meituan<br>Previously Senior Designer at Alibaba &amp; JD</span>',
     artifacts_title: 'Ships',
-    lab_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
-    ],
-    lab: [
-      { label: 'coming soon…', href: '#' }
     ],
     howto:
       '<div class="entry-text">' +
