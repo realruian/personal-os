@@ -34,8 +34,8 @@ window.I18N = {
       '* 首次按键无声？先点一下页面（浏览器自动播放策略）' +
       '</div>',
     social: [
-      { label: 'xiaohongshu.com/田睿安', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
-      { label: 'github.com/realruian', href: 'https://github.com/realruian' },
+      { label: 'RED', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
+      { label: 'GitHub', href: 'https://github.com/realruian' },
       { label: 'mail/realruian@gmail.com', href: 'mailto:realruian@gmail.com' }
     ],
     error_loading: '内容加载失败'
@@ -71,8 +71,8 @@ window.I18N = {
       '* first keypress silent? click once on the page (browser autoplay policy)' +
       '</div>',
     social: [
-      { label: 'xiaohongshu.com/ruian', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
-      { label: 'github.com/realruian', href: 'https://github.com/realruian' },
+      { label: 'RED', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
+      { label: 'GitHub', href: 'https://github.com/realruian' },
       { label: 'mail/realruian@gmail.com', href: 'mailto:realruian@gmail.com' }
     ],
     error_loading: 'failed to load content'
