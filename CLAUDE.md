@@ -68,6 +68,15 @@ python3 -c "import json; json.load(open('content/data.json'))"
 - `robots.txt` 禁 `/admin.html` 索引的规则
 - 根目录 `DESIGN.md` — 视觉设计规范，要改样式先看它
 
+## ⚠️ 已知未解决问题
+
+**Col 3 图片刷新时变扁的 flicker**（2026-04-18 深夜遗留）
+- 首次打开没问题，**刷新时**图片瞬间被显示成更扁的比例，然后回到 3:2
+- 尝试过 6 次修复都没解决：parent aspect-ratio / img aspect-ratio / padding-bottom / contain:size / img opacity:0 / try/catch try/catch...
+- Console 诊断证明稳定态 `.img-wrap` 一直是 3:2，变形只发生在刷新的一帧内
+- 放弃瞎修，CSS 已回到 `ea96ee9` 的简单状态
+- **下次再啃前的前置**：必须拿到变形瞬间的 DevTools 精确数据（Elements computed panel 截图 / Performance 录制 reload），不要再凭假设改代码
+
 ## 参考
 
 - 整站设计规范：`DESIGN.md`
