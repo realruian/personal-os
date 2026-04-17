@@ -200,6 +200,18 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 .entry-caption { color: var(--text); margin-top: 8px; word-break: break-word; }
 .entry-img[loading="lazy"] { background: var(--line); }
 
+/* Shader 未 ready 时 CSS 点阵占位：盖住原图，避免首屏看到清晰原图再"粘"上 shader */
+.img-wrap:not([data-shader-init="1"])::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--mid) 0.8px, transparent 1.2px);
+  background-size: 5px 5px;
+  z-index: 2;
+  pointer-events: none;
+}
+
 /* Lightbox：点击图片全屏看原图 */
 .lightbox {
   position: fixed;

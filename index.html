@@ -15,6 +15,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Shader 依赖预加载：让浏览器在解析 HTML 阶段就并行下载，首屏更快上 shader -->
+  <link rel="modulepreload" href="https://esm.sh/react@18" crossorigin>
+  <link rel="modulepreload" href="https://esm.sh/react-dom@18/client" crossorigin>
+  <link rel="modulepreload" href="https://esm.sh/@paper-design/shaders-react@0.0.72?deps=react@18,react-dom@18" crossorigin>
 </head>
 <body>
   <div class="page">
