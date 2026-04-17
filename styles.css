@@ -273,6 +273,15 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 /* Col 3 图片上下间距 = col padding 24px，和离左侧分割线等宽 */
 #col-images .entry { margin-bottom: 24px; }
 
+/* Col 3 entry 不走 reveal 动画：transform 和 .img-wrap 的 aspect-ratio
+   在刷新（img 已 cache）时会争抢一帧，造成"变扁"视觉。
+   Col 3 是图片为主，直接 visible 更稳。Col 2 的文字 reveal 保留。 */
+#col-images .entry {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 /* Col 3 图片统一长方形（3:2），避免正方形占屏过多 */
 /* aspect-ratio 设在 parent div 上（非 replaced element，永远生效），
    img 绝对定位填充，完全不参与 layout。
