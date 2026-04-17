@@ -22,7 +22,7 @@
       <button type="button" id="save-token-btn" class="btn btn-primary">保存</button>
       <p class="admin-hint" style="margin-top:24px">
         · Token 只存在你当前浏览器的 localStorage，不会上传到任何服务器<br>
-        · 需要 fine-grained PAT，repo 限定 <code>ai-personal-site</code>，权限 Contents: Read and write<br>
+        · 需要 fine-grained PAT，repo 限定 <code>personal-os</code>，权限 Contents: Read and write<br>
         · 丢了就去 <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a> 重建
       </p>
     </section>
@@ -34,18 +34,46 @@
         <button type="button" id="logout-btn" class="btn-link">logout</button>
       </header>
 
-      <div class="field">
-        <label class="field-label">中文（必填）</label>
-        <textarea id="text-zh" placeholder="今天想写点什么…" rows="5"></textarea>
+      <!-- 模式切换：想法 / 图片 -->
+      <div class="tab-switch">
+        <button type="button" class="tab-btn active" data-mode="thought">thought · 想法</button>
+        <button type="button" class="tab-btn" data-mode="photo">photo · 图片</button>
       </div>
 
-      <div class="field">
-        <label class="field-label">
-          English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
-        </label>
-        <textarea id="text-en" placeholder="same thought, in english…" rows="3"></textarea>
+      <!-- thought 模式：文字 -->
+      <div id="thought-fields" class="mode-fields">
+        <div class="field">
+          <label class="field-label">中文（必填）</label>
+          <textarea id="text-zh" placeholder="今天想写点什么…" rows="5"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
+          </label>
+          <textarea id="text-en" placeholder="same thought, in english…" rows="3"></textarea>
+        </div>
       </div>
 
+      <!-- photo 模式：caption + gallery -->
+      <div id="photo-fields" class="mode-fields hidden">
+        <div class="field">
+          <label class="field-label">caption 中文 <span class="field-optional">（可选）</span></label>
+          <input type="text" id="caption-zh" placeholder="一句话配图">
+        </div>
+        <div class="field">
+          <label class="field-label">caption English <span class="field-optional">（可选）</span></label>
+          <input type="text" id="caption-en" placeholder="one-line caption">
+        </div>
+        <div class="field field-inline">
+          <label class="checkbox">
+            <input type="checkbox" id="gallery-check">
+            <span>多张图打包成一个画廊</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 共享：图片上传 -->
       <div class="field">
         <label class="field-label">配图 <span class="field-optional">（点击 / 拖拽 / 粘贴，可多张）</span></label>
         <div id="drop-zone" class="drop-zone">
@@ -55,10 +83,15 @@
         <div id="preview-grid" class="preview-grid"></div>
       </div>
 
+      <!-- 共享：选项 -->
       <div class="field field-inline">
         <label class="checkbox">
           <input type="checkbox" id="featured-check">
           <span>featured · 置顶</span>
+        </label>
+        <label class="checkbox" id="translate-wrapper" style="margin-left: 24px">
+          <input type="checkbox" id="translate-check">
+          <span>自动翻译英文（需 Anthropic key）</span>
         </label>
       </div>
 
@@ -68,6 +101,28 @@
       </div>
 
       <div id="status" class="status hidden"></div>
+
+      <!-- 设置：Anthropic API key -->
+      <details class="settings-details">
+        <summary>settings · 高级设置</summary>
+        <div class="field" style="margin-top: 16px">
+          <label class="field-label">
+            Anthropic API Key <span class="field-optional">（用于自动翻译，留空则不启用）</span>
+          </label>
+          <input type="password" id="anthropic-key-input" placeholder="sk-ant-..." autocomplete="off">
+          <button type="button" id="save-anthropic-btn" class="btn-link" style="margin-top: 8px">保存</button>
+          <span id="anthropic-status" class="field-optional" style="margin-left: 8px"></span>
+        </div>
+      </details>
+
+      <!-- Manage 面板：已发条目 -->
+      <details class="manage-details" id="manage-details">
+        <summary>manage · 历史条目</summary>
+        <div id="entries-list" class="entries-list">
+          <p class="admin-hint">点开时加载最新列表…</p>
+        </div>
+      </details>
+
     </section>
 
   </div>
