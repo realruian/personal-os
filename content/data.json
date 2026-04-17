@@ -17,17 +17,13 @@
   "images": [
     {
       "type": "image",
-      "ts": 1744848000000,
-      "url": "https://images.unsplash.com/photo-1481487196290-c152efe083f5?w=800&q=80",
-      "caption_zh": "占位图 · 等你给我真实图片",
-      "caption_en": "placeholder · real photos coming soon"
+      "ts": 1776448786000,
+      "url": "assets/thoughts/1776448786000-0.jpg"
     },
     {
       "type": "image",
-      "ts": 1744761600000,
-      "url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-      "caption_zh": "hover 看原图（移除半调点阵）",
-      "caption_en": "hover to peek under the halftone"
+      "ts": 1776448787000,
+      "url": "assets/thoughts/1776448787000-0.jpg"
     }
   ]
 }
