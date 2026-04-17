@@ -20,6 +20,11 @@
   "images": [
     {
       "type": "image",
+      "ts": 1776449500000,
+      "url": "assets/thoughts/1776448786000-0.jpg"
+    },
+    {
+      "type": "image",
       "ts": 1776449243610,
       "url": "assets/thoughts/1776449243610-0.jpg"
     },
@@ -27,11 +32,6 @@
       "type": "image",
       "ts": 1776449155656,
       "url": "assets/thoughts/1776449155656-0.jpg"
-    },
-    {
-      "type": "image",
-      "ts": 1776449500000,
-      "url": "assets/thoughts/1776448786000-0.jpg"
     },
     {
       "type": "image",
