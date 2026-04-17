@@ -31,10 +31,11 @@ python3 -c "import json; json.load(open('content/data.json'))"
 
 - **Col 2 thoughts 按 ts 降序 + featured 置顶**（排序逻辑在 `js/app.js` 的 renderCol2 前）
 - **Col 3 images 按 `data.json` 数组位置渲染**（**不按 ts**！要调整顺序就改数组里的位置，改 ts 没用）
+- **Col 1 Writing 按 ts 降序 + 最多前 5 篇**（`renderWriting` 里 slice(0,5)；改 ts 即可调顺序，和 Col 3 不同）
 - 发布面板 `js/admin.js` 的 `REPO_NAME` 常量必须和 Vercel 接的 repo 名一致
 - 主题不持久化，刷新回默认（当前默认 `light leaves`，在 `<body>` class 上）
 - HalftoneDots shader 走 esm.sh CDN；`@property` 颜色 token 需要 Chromium 85+ / Safari 16.4+
-- `.img-wrap:not([data-shader-init="1"])::after` CSS 占位，shader ready 后自动让位
+- `.img-wrap:not([data-shader-init="1"])::after` CSS 占位，shader ready 后自动让位（标志要在 shader 真渲染完才设，见经验教训）
 
 ## Git 纪律（YOU MUST）
 
@@ -49,17 +50,21 @@ python3 -c "import json; json.load(open('content/data.json'))"
 - 认证：GitHub fine-grained PAT，**repo 范围必须选 `personal-os`**，权限 `Contents: Read and write`
 - 存 `localStorage.gh_token`，每台设备各自存一次
 - 可选 Anthropic API key → 自动翻译英文（`localStorage.anthropic_key`）
-- 两种模式：thought（图文）/ photo（纯图片到 Col 3）
-- manage 面板可 edit / delete 历史条目
+- 三种模式：thought（图文 → Col 2）/ photo（纯图片 → Col 3）/ writing（外链文章 → Col 1 Writing 区）
+- writing 模式无图片上传 / featured / 翻译，只有标题中英 + URL
+- manage 面板可 edit / delete 历史条目（含 writing）
 
 **YOU MUST：三处 repo 名必须一致**
 `admin.js` 的 `REPO_NAME` / PAT 的 Repository access / Vercel 项目接的 repo —— 任一不一致发布就 403 或推不到正确的部署。改 repo 名时三处都要同步改。
 
 ## 内容字段约定（data.json）
 
-- thought：`{ type: 'thought', ts, text_zh, text_en?, images?: [{url}], featured?, featured_ts? }`
-- image：`{ type: 'image', ts, url, caption_zh?, caption_en? }`
-- gallery：`{ type: 'gallery', ts, images: [{url}], captionHtml_zh?, captionHtml_en? }`
+顶层结构：`{ thoughts: [], images: [], writing: [] }`
+
+- thought（→ Col 2）：`{ type: 'thought', ts, text_zh, text_en?, images?: [{url}], featured?, featured_ts? }`
+- image（→ Col 3）：`{ type: 'image', ts, url, caption_zh?, caption_en? }`
+- gallery（→ Col 3）：`{ type: 'gallery', ts, images: [{url}], captionHtml_zh?, captionHtml_en? }`
+- writing（→ Col 1 Writing 区）：`{ type: 'writing', ts, title_zh, title_en?, url }`
 
 ## 不要动
 
