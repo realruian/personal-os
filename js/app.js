@@ -413,14 +413,8 @@ function initVoice(player) {
     if (hovered === col2 || hovered === col3) {
       hovered.scrollTop += dy;
     } else {
-      if (dy > 0) {
-        const col2left = col2.scrollHeight - col2.scrollTop - col2.clientHeight;
-        if (col2left > 1) col2.scrollTop += dy;
-        else              col3.scrollTop += dy;
-      } else {
-        if (col3.scrollTop > 0) col3.scrollTop += dy;
-        else                    col2.scrollTop += dy;
-      }
+      // 鼠标不在任何列上 → 默认只滚 col2，不再接替滚 col3
+      col2.scrollTop += dy;
     }
   }, { passive: false });
 })();
