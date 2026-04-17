@@ -18,10 +18,12 @@ const shaderProps = {
 const shaderRegistry = new Map();
 
 async function initShader(wrap) {
-  if (wrap.dataset.shaderInit) return;
+  // data-shader-init 同时是 CSS 占位让位的开关，要等 shader 真渲染完才能设
+  // 防重复 init 用内部 flag，避免 MutationObserver / 初始扫描重复进
+  if (wrap.dataset.shaderInit || wrap._shaderStarted) return;
   const slide = wrap.closest('.gallery-slide');
   if (slide && !slide.classList.contains('active')) return;
-  wrap.dataset.shaderInit = '1';
+  wrap._shaderStarted = true;
   const img     = wrap.querySelector('img');
   const overlay = wrap.querySelector('.shader-overlay');
   if (!img || !overlay) return;
@@ -37,9 +39,13 @@ async function initShader(wrap) {
     root.render(React.createElement(HalftoneDots, props));
     shaderRegistry.set(wrap, { root, props });
     visibilityObserver.observe(wrap);
+    // 等 React mount + WebGL 编译 + 首帧 paint，再让 CSS 占位让位
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    wrap.dataset.shaderInit = '1';
   } catch (e) {
     console.warn('Shader failed:', e);
     overlay.remove();
+    wrap.dataset.shaderInit = '1';  // 失败也让占位让位，避免永久占位
   }
 }
 
