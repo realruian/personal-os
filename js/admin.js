@@ -1,12 +1,12 @@
 // ──────────────────────────────────────────────
 // 发布面板逻辑：GitHub API 直接操作 repo 内容
-// repo: realruian/ai-personal-site
+// repo: realruian/personal-os
 // 数据源：content/data.json
 // 图片路径：assets/thoughts/{ts}-{i}.{ext}
 // ──────────────────────────────────────────────
 
 const REPO_OWNER = 'realruian';
-const REPO_NAME = 'ai-personal-site';
+const REPO_NAME = 'personal-os';
 const BRANCH = 'main';
 const DATA_PATH = 'content/data.json';
 const TOKEN_KEY = 'gh_token';
