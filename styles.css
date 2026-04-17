@@ -110,14 +110,6 @@ body.light .voice-play-btn:hover { color: #000; }
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
   min-height: 100vh;
-  animation: pageFadeIn 700ms var(--ease-out) both;
-}
-@keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .page { animation: none; }
 }
 
 .col {
