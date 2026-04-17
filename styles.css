@@ -305,7 +305,7 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  transition: opacity 220ms var(--ease-out);
+  transition: opacity 700ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .img-wrap:hover .shader-overlay { opacity: 0; }
