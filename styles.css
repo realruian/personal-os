@@ -200,6 +200,16 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 .entry-caption { color: var(--text); margin-top: 8px; word-break: break-word; }
 .entry-img[loading="lazy"] { background: var(--line); }
 
+/* thought 带配图：下面自动排网格 */
+.thought-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.thought-images .img-wrap { aspect-ratio: 1; overflow: hidden; }
+.thought-images .entry-img { width: 100%; height: 100%; object-fit: cover; }
+
 /* howto: 置顶的玩法说明，和普通 entry 视觉区分 */
 .how-to-entry {
   padding-left: 10px;

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>post · admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-admin.css">
+</head>
+<body class="admin">
+  <div class="admin-wrap">
+
+    <!-- 未登录：token 输入 -->
+    <section id="auth-section" class="card hidden">
+      <h1 class="admin-title">post · admin</h1>
+      <p class="admin-hint">首次使用：贴入你的 GitHub Personal Access Token，存到这个浏览器。</p>
+      <input type="password" id="token-input" placeholder="github_pat_..." autocomplete="off">
+      <button type="button" id="save-token-btn" class="btn btn-primary">保存</button>
+      <p class="admin-hint" style="margin-top:24px">
+        · Token 只存在你当前浏览器的 localStorage，不会上传到任何服务器<br>
+        · 需要 fine-grained PAT，repo 限定 <code>ai-personal-site</code>，权限 Contents: Read and write<br>
+        · 丢了就去 <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a> 重建
+      </p>
+    </section>
+
+    <!-- 已登录：发布表单 -->
+    <section id="post-section" class="card hidden">
+      <header class="post-header">
+        <h1 class="admin-title">post · 发布</h1>
+        <button type="button" id="logout-btn" class="btn-link">logout</button>
+      </header>
+
+      <div class="field">
+        <label class="field-label">中文（必填）</label>
+        <textarea id="text-zh" placeholder="今天想写点什么…" rows="5"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">
+          English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
+        </label>
+        <textarea id="text-en" placeholder="same thought, in english…" rows="3"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">配图 <span class="field-optional">（点击 / 拖拽 / 粘贴，可多张）</span></label>
+        <div id="drop-zone" class="drop-zone">
+          <input type="file" id="file-input" accept="image/*" multiple hidden>
+          <span class="drop-hint">+ 添加图片 或 直接拖进来</span>
+        </div>
+        <div id="preview-grid" class="preview-grid"></div>
+      </div>
+
+      <div class="field field-inline">
+        <label class="checkbox">
+          <input type="checkbox" id="featured-check">
+          <span>featured · 置顶</span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="cancel-btn" class="btn btn-ghost">清空</button>
+        <button type="button" id="publish-btn" class="btn btn-primary">发布</button>
+      </div>
+
+      <div id="status" class="status hidden"></div>
+    </section>
+
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

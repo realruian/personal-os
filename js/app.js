@@ -70,6 +70,16 @@ function renderCol2(items) {
       const rawHtml = item['html_' + lang] || item.html;
       const rawText = item['text_' + lang] || item.text;
       html = `<div class="entry-text">${rawHtml || escapeHtml(rawText || '')}</div>`;
+      if (Array.isArray(item.images) && item.images.length) {
+        html += '<div class="thought-images">' +
+          item.images.map(im =>
+            `<div class="img-wrap">` +
+            `<img src="${escapeHtml(im.url)}" class="entry-img" loading="lazy" alt="">` +
+            `<div class="shader-overlay"></div>` +
+            `</div>`
+          ).join('') +
+          '</div>';
+      }
     }
 
     const lang = window.CURRENT_LANG || 'zh';
