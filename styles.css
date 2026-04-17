@@ -200,6 +200,55 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 .entry-caption { color: var(--text); margin-top: 8px; word-break: break-word; }
 .entry-img[loading="lazy"] { background: var(--line); }
 
+/* Lightbox：点击图片全屏看原图 */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  cursor: zoom-out;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms var(--ease-out);
+}
+.lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 12px;
+  line-height: 1;
+}
+.lightbox-close:hover { color: #fff; }
+/* Col 3 / thought 图片加上可点手势 */
+#col-images .img-wrap,
+.thought-images .img-wrap { cursor: zoom-in; }
+@media (max-width: 640px) {
+  .lightbox { padding: 16px; }
+  .lightbox-close { top: 12px; right: 12px; }
+}
+
 /* Col 3 图片统一长方形（3:2），避免正方形占屏过多 */
 #col-images .entry > .img-wrap,
 #col-images .gallery-slide .img-wrap {

@@ -326,6 +326,52 @@ function initVoice(player) {
   });
 }
 
+// Lightbox：点击图片全屏展示（Col 3 图片 + Col 2 thought 内嵌图都支持）
+(function() {
+  let lb = null;
+
+  function ensureLightbox() {
+    if (lb) return lb;
+    lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = '<button type="button" class="lightbox-close" aria-label="close">×</button><img alt="">';
+    document.body.appendChild(lb);
+    // 点背景 / 关闭按钮关闭
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb || e.target.classList.contains('lightbox-close')) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lb.classList.contains('active')) close();
+    });
+    return lb;
+  }
+
+  function open(src) {
+    const el = ensureLightbox();
+    el.querySelector('img').src = src;
+    el.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    if (!lb) return;
+    lb.classList.remove('active');
+    document.body.style.overflow = '';
+    // 延迟清 src，等淡出动画结束
+    setTimeout(() => { if (!lb.classList.contains('active')) lb.querySelector('img').src = ''; }, 300);
+  }
+
+  // 统一事件委托：Col 3 和 thought 内嵌图的 img-wrap 都响应
+  document.addEventListener('click', (e) => {
+    // 忽略 gallery 的导航按钮
+    if (e.target.closest('.gallery-btn')) return;
+    const wrap = e.target.closest('#col-images .img-wrap, .thought-images .img-wrap');
+    if (!wrap) return;
+    const img = wrap.querySelector('img');
+    if (img && img.src) open(img.src);
+  });
+})();
+
 // Col 3 移动端图片 tap-and-hold 隐藏 shader
 (function() {
   const col3 = document.getElementById('col-images');
