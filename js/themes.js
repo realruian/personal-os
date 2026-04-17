@@ -123,4 +123,14 @@
       }
     }, { passive: false });
   });
+
+  // ── 默认夏夜模式：首次用户交互后启动森林音（视频已 autoplay + muted）─────────────
+  function bootstrapLeavesAudio() {
+    if (!document.body.classList.contains('leaves')) return;
+    safePlay(v()); // 保险：若 autoplay 被挡，此刻补一次 play（已有用户交互）
+    safePlay(a());
+  }
+  ['click', 'touchstart', 'keydown'].forEach(ev => {
+    window.addEventListener(ev, bootstrapLeavesAudio, { once: true, passive: true });
+  });
 })();

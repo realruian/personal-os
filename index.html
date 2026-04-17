@@ -21,7 +21,7 @@
   <link rel="modulepreload" href="https://esm.sh/react-dom@18/client" crossorigin>
   <link rel="modulepreload" href="https://esm.sh/@paper-design/shaders-react@0.0.72?deps=react@18,react-dom@18" crossorigin>
 </head>
-<body>
+<body class="light leaves">
   <div class="page">
 
     <!-- Col 1 — 身份 -->
@@ -80,8 +80,8 @@
   </div>
 
   <!-- 氛围叠加层（视频/音频） -->
-  <video id="leaves-overlay" src="assets/leaves.mp4" loop muted playsinline preload="none"></video>
-  <audio id="forest-audio"   src="assets/forest.mp3" loop preload="none"></audio>
+  <video id="leaves-overlay" src="assets/leaves.mp4" loop muted playsinline autoplay preload="auto"></video>
+  <audio id="forest-audio"   src="assets/forest.mp3" loop preload="auto"></audio>
   <video id="moon-overlay"   src="assets/moon.mp4"   loop muted playsinline preload="none"></video>
   <audio id="night-audio"    src="assets/night.mp3"  loop preload="none"></audio>
   <video id="rain-overlay"   src="assets/rain.mp4"   loop muted playsinline preload="none"></video>
