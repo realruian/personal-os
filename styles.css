@@ -138,6 +138,15 @@ body.light .voice-play-btn:hover { color: #000; }
 
 p { margin-bottom: 32px; }
 
+/* Intro 副信息（现职 + 过往），淡色小字 */
+.intro-sub {
+  display: block;
+  color: var(--mid);
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
 .section       { margin-bottom: 28px; }
 .section-title {
   font-size: 10px;
