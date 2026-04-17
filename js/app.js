@@ -33,6 +33,7 @@ function renderCol2(items) {
   const col = document.getElementById('col-thoughts');
   col.querySelector('.col-loader')?.remove();
   items.forEach(item => {
+    try {
     const el = document.createElement('div');
     el.className = 'entry';
     let html = '';
@@ -95,6 +96,9 @@ function renderCol2(items) {
     if (videoEntry) initVideo(videoEntry);
     const voicePlayer = el.querySelector('.voice-player');
     if (voicePlayer) initVoice(voicePlayer);
+    } catch (err) {
+      console.warn('[renderCol2] skip bad item', item, err);
+    }
   });
 }
 
@@ -103,6 +107,7 @@ function renderImages(images) {
   const col = document.getElementById('col-images');
   col.querySelector('.col-loader')?.remove();
   images.forEach(img => {
+    try {
     const el = document.createElement('div');
     el.className = 'entry';
     let html = '';
@@ -147,6 +152,9 @@ function renderImages(images) {
 
     const galleryWrap = el.querySelector('.gallery-wrap');
     if (galleryWrap) initGallery(galleryWrap);
+    } catch (err) {
+      console.warn('[renderImages] skip bad item', img, err);
+    }
   });
 }
 
