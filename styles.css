@@ -274,18 +274,24 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 #col-images .entry { margin-bottom: 24px; }
 
 /* Col 3 图片统一长方形（3:2），避免正方形占屏过多 */
+/* aspect-ratio 设在 parent div 上（非 replaced element，永远生效），
+   img 绝对定位填充，完全不参与 layout。
+   为什么不在 img 上设 aspect-ratio：img 是 replaced element，
+   加载后浏览器会用 natural ratio 覆盖 CSS aspect-ratio，导致 flicker。
+   参考：https://jakearchibald.com/2022/img-aspect-ratio/ */
 #col-images .entry > .img-wrap,
 #col-images .gallery-slide .img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
 }
-/* aspect-ratio 设在 img 本身：img 元素进 DOM 浏览器立刻知道它是 3:2，
-   不依赖 parent 尺寸计算，避免布局跳动 */
 #col-images .entry > .img-wrap .entry-img,
 #col-images .gallery-slide .img-wrap .entry-img {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;               /* 关键：撤销 HTML height attribute，让 aspect-ratio 生效 */
-  aspect-ratio: 3 / 2;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -296,8 +302,8 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   gap: 8px;
   margin-top: 12px;
 }
-.thought-images .img-wrap { overflow: hidden; }
-.thought-images .entry-img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.thought-images .img-wrap { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; }
+.thought-images .entry-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
 /* howto: 置顶的玩法说明，用淡色文字和普通 entry 区分 */
 .how-to-entry { margin-bottom: 40px; }

@@ -75,7 +75,7 @@ function renderCol2(items) {
         html += '<div class="thought-images">' +
           item.images.map(im =>
             `<div class="img-wrap">` +
-            `<img src="${escapeHtml(im.url)}" class="entry-img" width="800" height="800" loading="lazy" alt="">` +
+            `<img src="${escapeHtml(im.url)}" class="entry-img" loading="lazy" alt="">` +
             `<div class="shader-overlay"></div>` +
             `</div>`
           ).join('') +
@@ -121,7 +121,7 @@ function renderImages(images) {
       const total = img.images.length;
       const slides = img.images.map((im, i) =>
         `<div class="gallery-slide${i === 0 ? ' active' : ''}">` +
-        `<div class="img-wrap"><img src="${escapeHtml(im.url)}" class="entry-img" width="1200" height="800" alt="">` +
+        `<div class="img-wrap"><img src="${escapeHtml(im.url)}" class="entry-img" alt="">` +
         `<div class="shader-overlay"></div></div>` +
         `</div>`
       ).join('');
@@ -139,7 +139,7 @@ function renderImages(images) {
         : `<video src="${escapeHtml(img.url)}" autoplay loop muted playsinline class="entry-img" style="display:block;width:100%;height:auto;"></video>`;
     } else {
       html = `<div class="img-wrap">` +
-        `<img src="${escapeHtml(img.url)}" class="entry-img" width="1200" height="800" loading="lazy" alt="">` +
+        `<img src="${escapeHtml(img.url)}" class="entry-img" loading="lazy" alt="">` +
         `<div class="shader-overlay"></div></div>`;
     }
 
