@@ -270,6 +270,9 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   .lightbox-close { top: 12px; right: 12px; }
 }
 
+/* Col 3 图片上下间距 = col padding 24px，和离左侧分割线等宽 */
+#col-images .entry { margin-bottom: 24px; }
+
 /* Col 3 图片统一长方形（3:2），避免正方形占屏过多 */
 #col-images .entry > .img-wrap,
 #col-images .gallery-slide .img-wrap {
