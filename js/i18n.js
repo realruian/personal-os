@@ -21,8 +21,8 @@ window.I18N = {
       '  S — 晚夏 · 飘叶 + 森林音\n' +
       '  M — 深夜 · 月色 + 虫鸣\n' +
       '  R — 雨天 · 冷灰底 + 雨声\n' +
-      '  C — 混沌 · 所有元素坍塌成物理块，再按一次归位\n\n' +
-      '* 首次按键无声？先点一下页面（浏览器自动播放策略）' +
+      '  C — 混沌 · 一切坍塌，再按归位\n\n' +
+      '* 没声音？点一下页面' +
       '</div>',
     social: [
       { label: 'RED/TIANRUIAN', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
@@ -49,8 +49,8 @@ window.I18N = {
       '  S — summer · falling leaves + forest\n' +
       '  M — midnight · moon + night sounds\n' +
       '  R — rain · cold grey + raindrops\n' +
-      '  C — chaos · everything collapses into physics; press again to restore\n\n' +
-      '* first keypress silent? click once on the page (browser autoplay policy)' +
+      '  C — chaos · collapse all; press to restore\n\n' +
+      '* silent? click the page once' +
       '</div>',
     social: [
       { label: 'RED/TIANRUIAN', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
