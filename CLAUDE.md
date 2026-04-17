@@ -46,11 +46,14 @@ python3 -c "import json; json.load(open('content/data.json'))"
 ## 发布面板（admin.html）
 
 - URL：`tianruian.com/admin.html`
-- 认证：GitHub fine-grained PAT，repo 范围限定 `personal-os`，权限 `Contents: Read and write`
+- 认证：GitHub fine-grained PAT，**repo 范围必须选 `personal-os`**，权限 `Contents: Read and write`
 - 存 `localStorage.gh_token`，每台设备各自存一次
 - 可选 Anthropic API key → 自动翻译英文（`localStorage.anthropic_key`）
 - 两种模式：thought（图文）/ photo（纯图片到 Col 3）
 - manage 面板可 edit / delete 历史条目
+
+**YOU MUST：三处 repo 名必须一致**
+`admin.js` 的 `REPO_NAME` / PAT 的 Repository access / Vercel 项目接的 repo —— 任一不一致发布就 403 或推不到正确的部署。改 repo 名时三处都要同步改。
 
 ## 内容字段约定（data.json）
 
