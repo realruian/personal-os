@@ -34,10 +34,11 @@
         <button type="button" id="logout-btn" class="btn-link">logout</button>
       </header>
 
-      <!-- 模式切换：想法 / 图片 -->
+      <!-- 模式切换：想法 / 图片 / 文章 -->
       <div class="tab-switch">
         <button type="button" class="tab-btn active" data-mode="thought">thought · 想法</button>
         <button type="button" class="tab-btn" data-mode="photo">photo · 图片</button>
+        <button type="button" class="tab-btn" data-mode="writing">writing · 文章</button>
       </div>
 
       <!-- thought 模式：文字 -->
@@ -73,8 +74,27 @@
         </div>
       </div>
 
-      <!-- 共享：图片上传 -->
-      <div class="field">
+      <!-- writing 模式：文章标题 + URL -->
+      <div id="writing-fields" class="mode-fields hidden">
+        <div class="field">
+          <label class="field-label">标题中文（必填）</label>
+          <input type="text" id="title-zh" placeholder="文章标题">
+        </div>
+        <div class="field">
+          <label class="field-label">
+            标题 English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
+          </label>
+          <input type="text" id="title-en" placeholder="article title in english">
+        </div>
+        <div class="field">
+          <label class="field-label">URL（必填）</label>
+          <input type="url" id="writing-url" placeholder="https://mp.weixin.qq.com/s/...">
+        </div>
+        <p class="admin-hint" style="margin-top:-8px">最多显示前 5 篇（按时间倒序）。改时间戳可调顺序。</p>
+      </div>
+
+      <!-- 共享：图片上传（thought / photo 用） -->
+      <div class="field" id="image-upload-field">
         <label class="field-label">配图 <span class="field-optional">（点击 / 拖拽 / 粘贴，可多张）</span></label>
         <div id="drop-zone" class="drop-zone">
           <input type="file" id="file-input" accept="image/*" multiple hidden>
@@ -83,8 +103,8 @@
         <div id="preview-grid" class="preview-grid"></div>
       </div>
 
-      <!-- 共享：选项 -->
-      <div class="field field-inline">
+      <!-- 共享：选项（thought / photo 用） -->
+      <div class="field field-inline" id="options-field">
         <label class="checkbox">
           <input type="checkbox" id="featured-check">
           <span>featured · 置顶</span>

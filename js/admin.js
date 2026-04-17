@@ -15,7 +15,7 @@ const ANTHROPIC_KEY = 'anthropic_key';
 // ── 状态 ──
 let selectedFiles = []; // [{ file, blobUrl }]  — 新选的文件
 let keptImageUrls = []; // [url, url]            — 编辑时保留的旧图 url
-let currentMode = 'thought'; // 'thought' | 'photo'
+let currentMode = 'thought'; // 'thought' | 'photo' | 'writing'
 let editingEntry = null;    // 正在编辑的条目：{ ts, type } 或 null
 
 // ── DOM ──
@@ -29,12 +29,18 @@ const textZh = $('text-zh');
 const textEn = $('text-en');
 const captionZh = $('caption-zh');
 const captionEn = $('caption-en');
+const titleZh = $('title-zh');
+const titleEn = $('title-en');
+const writingUrl = $('writing-url');
 const galleryCheck = $('gallery-check');
 const featuredCheck = $('featured-check');
 const translateCheck = $('translate-check');
 const translateWrapper = $('translate-wrapper');
 const thoughtFields = $('thought-fields');
 const photoFields = $('photo-fields');
+const writingFields = $('writing-fields');
+const imageUploadField = $('image-upload-field');
+const optionsField = $('options-field');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
@@ -243,7 +249,7 @@ async function uploadNewImages(ts) {
 
 async function publish() {
   // 根据 mode 读字段
-  let text_zh, text_en, caption_zh, caption_en;
+  let text_zh, text_en, caption_zh, caption_en, title_zh, title_en, url;
   if (currentMode === 'thought') {
     text_zh = textZh.value.trim();
     text_en = textEn.value.trim();
@@ -252,13 +258,21 @@ async function publish() {
       textZh.focus();
       return;
     }
-  } else {
+  } else if (currentMode === 'photo') {
     caption_zh = captionZh.value.trim();
     caption_en = captionEn.value.trim();
     if (selectedFiles.length === 0 && keptImageUrls.length === 0) {
       showStatus('photo 模式需要至少一张图', 'error');
       return;
     }
+  } else {
+    // writing
+    title_zh = titleZh.value.trim();
+    title_en = titleEn.value.trim();
+    url = writingUrl.value.trim();
+    if (!title_zh) { showStatus('标题中文是必填的', 'error'); titleZh.focus(); return; }
+    if (!url) { showStatus('URL 是必填的', 'error'); writingUrl.focus(); return; }
+    if (!/^https?:\/\//.test(url)) { showStatus('URL 必须以 http:// 或 https:// 开头', 'error'); writingUrl.focus(); return; }
   }
 
   const featured = featuredCheck.checked;
@@ -275,8 +289,8 @@ async function publish() {
       text_en = await translateToEn(text_zh);
     }
 
-    // 上传新图片
-    const newUploaded = await uploadNewImages(ts);
+    // 上传新图片（writing 模式跳过）
+    const newUploaded = currentMode === 'writing' ? [] : await uploadNewImages(ts);
     const keptObjs = keptImageUrls.map(url => ({ url }));
     const allImages = [...keptObjs, ...newUploaded];
 
@@ -287,6 +301,7 @@ async function publish() {
     const currentJson = JSON.parse(base64ToStr(current.content));
     currentJson.thoughts = currentJson.thoughts || [];
     currentJson.images = currentJson.images || [];
+    currentJson.writing = currentJson.writing || [];
 
     // 构造新条目
     let newEntry;
@@ -299,8 +314,7 @@ async function publish() {
         ...(allImages.length ? { images: allImages } : {}),
         ...(featured ? { featured: true, featured_ts: ts } : {})
       };
-    } else {
-      // photo 模式：gallery 或多个 image
+    } else if (currentMode === 'photo') {
       if (galleryCheck.checked && allImages.length > 1) {
         newEntry = {
           type: 'gallery',
@@ -310,8 +324,6 @@ async function publish() {
           ...(caption_en ? { captionHtml_en: caption_en } : {})
         };
       } else {
-        // 多张独立图 → 只有一张或不打包：每张一个 image 条目
-        // 若多张独立图，用户意图模糊，我们只用第一张为主条目，把剩余单独追加
         newEntry = {
           type: 'image',
           ts,
@@ -320,11 +332,23 @@ async function publish() {
           ...(caption_en ? { caption_en } : {})
         };
       }
+    } else {
+      // writing
+      newEntry = {
+        type: 'writing',
+        ts,
+        title_zh,
+        ...(title_en ? { title_en } : {}),
+        url
+      };
     }
 
     // 写回：编辑 or 新增
     if (editingEntry) {
-      const arr = editingEntry.type === 'thought' ? currentJson.thoughts : currentJson.images;
+      let arr;
+      if (editingEntry.type === 'thought') arr = currentJson.thoughts;
+      else if (editingEntry.type === 'writing') arr = currentJson.writing;
+      else arr = currentJson.images;
       const idx = arr.findIndex(e => e.ts === editingEntry.ts);
       if (idx >= 0) arr[idx] = newEntry;
       else arr.unshift(newEntry);
@@ -332,6 +356,8 @@ async function publish() {
       if (currentMode === 'thought') {
         if (featured) currentJson.thoughts.forEach(t => { delete t.featured; delete t.featured_ts; });
         currentJson.thoughts.unshift(newEntry);
+      } else if (currentMode === 'writing') {
+        currentJson.writing.unshift(newEntry);
       } else {
         currentJson.images.unshift(newEntry);
         // photo 模式若多张独立图（非 gallery），把其他图当独立条目加入
@@ -351,7 +377,7 @@ async function publish() {
 
     // 提交
     showStatus(editingEntry ? '更新 data.json...' : '提交 data.json...');
-    const digest = (text_zh || caption_zh || '(无文字)').slice(0, 20).replace(/\s+/g, ' ');
+    const digest = (text_zh || caption_zh || title_zh || '(无文字)').slice(0, 20).replace(/\s+/g, ' ');
     const date = new Date(ts).toISOString().slice(0, 16).replace('T', ' ');
     const prefix = editingEntry ? 'edit' : 'post';
     const message = `${prefix}: ${date} · ${digest}`;
@@ -390,6 +416,9 @@ function resetForm() {
   textEn.value = '';
   captionZh.value = '';
   captionEn.value = '';
+  titleZh.value = '';
+  titleEn.value = '';
+  writingUrl.value = '';
   galleryCheck.checked = false;
   featuredCheck.checked = false;
   translateCheck.checked = false;
@@ -426,12 +455,17 @@ function enterEditMode(entry, type) {
 
   // 切到正确 mode
   if (type === 'thought') switchMode('thought');
+  else if (type === 'writing') switchMode('writing');
   else switchMode('photo');
 
   // 填内容
   if (type === 'thought') {
     textZh.value = entry.text_zh || entry.text || '';
     textEn.value = entry.text_en || '';
+  } else if (type === 'writing') {
+    titleZh.value = entry.title_zh || entry.title || '';
+    titleEn.value = entry.title_en || '';
+    writingUrl.value = entry.url || '';
   } else {
     captionZh.value = entry.caption_zh || entry.captionHtml_zh || '';
     captionEn.value = entry.caption_en || entry.captionHtml_en || '';
@@ -439,10 +473,12 @@ function enterEditMode(entry, type) {
   }
   featuredCheck.checked = !!entry.featured;
 
-  // 图片：保留现有 url，等待新增
+  // 图片：保留现有 url，等待新增（writing 不涉及图）
   selectedFiles.forEach((f) => URL.revokeObjectURL(f.blobUrl));
   selectedFiles = [];
-  if (entry.images && Array.isArray(entry.images)) {
+  if (type === 'writing') {
+    keptImageUrls = [];
+  } else if (entry.images && Array.isArray(entry.images)) {
     keptImageUrls = entry.images.map(im => im.url);
   } else if (entry.url) {
     keptImageUrls = [entry.url];
@@ -473,7 +509,8 @@ async function loadEntries() {
 
     const all = [
       ...(json.thoughts || []).map(t => ({ ...t, __type: 'thought' })),
-      ...(json.images || []).map(i => ({ ...i, __type: 'image' }))
+      ...(json.images || []).map(i => ({ ...i, __type: 'image' })),
+      ...(json.writing || []).map(w => ({ ...w, __type: 'writing' }))
     ].sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
     if (!all.length) {
@@ -482,15 +519,22 @@ async function loadEntries() {
     }
 
     entriesList.innerHTML = all.map((e) => {
-      const preview = e.__type === 'thought'
-        ? (e.text_zh || e.text || '').slice(0, 60).replace(/\s+/g, ' ')
-        : (e.caption_zh || e.captionHtml_zh || '').slice(0, 40);
+      let preview;
+      if (e.__type === 'thought') {
+        preview = (e.text_zh || e.text || '').slice(0, 60).replace(/\s+/g, ' ');
+      } else if (e.__type === 'writing') {
+        preview = (e.title_zh || e.title || '') + ' → ' + (e.url || '');
+        preview = preview.slice(0, 80);
+      } else {
+        preview = (e.caption_zh || e.captionHtml_zh || '').slice(0, 40);
+      }
       const imgTag = e.__type === 'image' || e.type === 'image'
         ? `<img src="/${escapeHtml(e.url)}" alt="">`
         : (e.images && e.images[0] ? `<img src="/${escapeHtml(e.images[0].url)}" alt="">` : '');
-      const kindLabel = e.__type === 'thought'
-        ? (e.featured ? '★ thought' : 'thought')
-        : (e.type === 'gallery' ? 'gallery' : 'image');
+      let kindLabel;
+      if (e.__type === 'thought') kindLabel = e.featured ? '★ thought' : 'thought';
+      else if (e.__type === 'writing') kindLabel = 'writing';
+      else kindLabel = e.type === 'gallery' ? 'gallery' : 'image';
       return `<div class="entry-row" data-ts="${escapeHtml(e.ts)}" data-kind="${escapeHtml(e.__type)}">
         <div class="entry-meta">
           <div class="entry-meta-time">${kindLabel} · ${fmtDate(e.ts)}</div>
@@ -510,7 +554,10 @@ async function loadEntries() {
         const ts = parseInt(row.dataset.ts, 10);
         const kind = row.dataset.kind;
         const action = btn.dataset.action;
-        const source = kind === 'thought' ? json.thoughts : json.images;
+        let source;
+        if (kind === 'thought') source = json.thoughts;
+        else if (kind === 'writing') source = json.writing;
+        else source = json.images;
         const entry = source.find(x => x.ts === ts);
         if (!entry) return;
 
@@ -529,21 +576,23 @@ async function loadEntries() {
 
 async function deleteEntry(entry, kind) {
   try {
-    showStatus('删除关联图片...');
-    // 先删关联图片
-    const imageUrls = [];
-    if (entry.images && Array.isArray(entry.images)) entry.images.forEach(im => imageUrls.push(im.url));
-    if (entry.url) imageUrls.push(entry.url);
+    // writing 没有关联图片，直接更新 data.json
+    if (kind !== 'writing') {
+      showStatus('删除关联图片...');
+      const imageUrls = [];
+      if (entry.images && Array.isArray(entry.images)) entry.images.forEach(im => imageUrls.push(im.url));
+      if (entry.url) imageUrls.push(entry.url);
 
-    for (const url of imageUrls) {
-      try {
-        const meta = await ghGet(url);
-        if (meta && meta.sha) {
-          await ghDelete(url, meta.sha, `delete: remove ${url}`);
+      for (const url of imageUrls) {
+        try {
+          const meta = await ghGet(url);
+          if (meta && meta.sha) {
+            await ghDelete(url, meta.sha, `delete: remove ${url}`);
+          }
+        } catch (err) {
+          // 单图删除失败不阻断整体流程，继续
+          console.warn('delete image failed:', url, err);
         }
-      } catch (err) {
-        // 单图删除失败不阻断整体流程，继续
-        console.warn('delete image failed:', url, err);
       }
     }
 
@@ -551,10 +600,13 @@ async function deleteEntry(entry, kind) {
     showStatus('更新 data.json...');
     const current = await ghGet(DATA_PATH);
     const json = JSON.parse(base64ToStr(current.content));
-    const arrKey = kind === 'thought' ? 'thoughts' : 'images';
+    let arrKey;
+    if (kind === 'thought') arrKey = 'thoughts';
+    else if (kind === 'writing') arrKey = 'writing';
+    else arrKey = 'images';
     json[arrKey] = (json[arrKey] || []).filter(x => x.ts !== entry.ts);
 
-    const digest = (entry.text_zh || entry.caption_zh || '').slice(0, 20).replace(/\s+/g, ' ');
+    const digest = (entry.text_zh || entry.caption_zh || entry.title_zh || '').slice(0, 20).replace(/\s+/g, ' ');
     const date = new Date(entry.ts).toISOString().slice(0, 16).replace('T', ' ');
     await ghPut(DATA_PATH, strToBase64(JSON.stringify(json, null, 2) + '\n'), current.sha, `delete: ${date} · ${digest}`);
 
@@ -572,6 +624,10 @@ function switchMode(mode) {
   tabBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   thoughtFields.classList.toggle('hidden', mode !== 'thought');
   photoFields.classList.toggle('hidden', mode !== 'photo');
+  writingFields.classList.toggle('hidden', mode !== 'writing');
+  // writing 不需要图片上传 / featured / translate
+  imageUploadField.classList.toggle('hidden', mode === 'writing');
+  optionsField.classList.toggle('hidden', mode === 'writing');
   // 翻译只对 thought 有效
   translateWrapper.style.display = mode === 'thought' ? '' : 'none';
 }

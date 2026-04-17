@@ -7,6 +7,7 @@ window.I18N = {
     title: '田睿安 · 个人站',
     intro: '田睿安<span class="intro-sub">美团 AI 产品工程专家<br>前阿里、京东高级设计师</span>',
     artifacts_title: 'Ships',
+    writing_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
@@ -34,6 +35,7 @@ window.I18N = {
     title: 'Ruian Tian · Personal Site',
     intro: 'Ruian Tian<span class="intro-sub">AI Product Engineer at Meituan<br>Previously Senior Designer at Alibaba &amp; JD</span>',
     artifacts_title: 'Ships',
+    writing_title: 'Writing',
     social_title: 'Social',
     artifacts: [
       { label: 'Lollipop', href: 'https://lollipop.top/' }
@@ -76,8 +78,8 @@ function applyI18n(lang) {
   });
 
   renderLinks('artifacts-links', dict.artifacts);
-  renderLinks('lab-links', dict.lab);
   renderLinks('social-links', dict.social);
+  // writing 数据在 data.json，不在 i18n dict 里。app.js 的 rerenderSiteData 会处理
 
   // 按钮高亮
   document.querySelectorAll('.lang-btn').forEach(btn => {

@@ -158,6 +158,24 @@ function renderImages(images) {
   });
 }
 
+// Col 1：Writing 链接（最多 5 篇，按 ts 倒序，改 ts 即可调顺序）
+function renderWriting(items) {
+  const c = document.getElementById('writing-links');
+  if (!c) return;
+  const lang = window.CURRENT_LANG || 'zh';
+  const list = (items || [])
+    .slice()
+    .sort((a, b) => (b.ts || 0) - (a.ts || 0))
+    .slice(0, 5);
+  c.innerHTML = list.map(item => {
+    const title = item['title_' + lang] || item.title_zh || item.title || '';
+    const href = item.url || '#';
+    const isExternal = /^https?:\/\//.test(href);
+    const attrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a href="${escapeHtml(href)}"${attrs}>${escapeHtml(title)}</a>`;
+  }).join('');
+}
+
 function setupReveal(col) {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const entries = Array.from(col.querySelectorAll('.entry'));
@@ -439,6 +457,7 @@ window.rerenderSiteData = function() {
   col3.querySelectorAll('.entry, .col-loader').forEach(el => el.remove());
   renderCol2(data.col2Items);
   renderImages(data.col3Media);
+  renderWriting(data.writing);
   setupReveal(col2);
   setupReveal(col3);
 };
@@ -447,7 +466,7 @@ window.rerenderSiteData = function() {
 document.addEventListener('DOMContentLoaded', () => {
   fetch('content/data.json')
     .then(r => r.json())
-    .then(({ thoughts, images }) => {
+    .then(({ thoughts, images, writing }) => {
       const col2Media = images.filter(i => i.type === 'voice' || i.type === 'video' || i.type === 'video_note');
       const col3Media = images.filter(i => !i.type || i.type === 'image' || i.type === 'gallery' || i.type === 'gif');
       const col2Items = [...thoughts, ...col2Media].sort((a, b) => {
@@ -456,11 +475,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (a.featured && b.featured) return (b.featured_ts || 0) - (a.featured_ts || 0);
         return b.ts - a.ts;
       });
-      window.__siteData = { col2Items, col3Media };
+      window.__siteData = { col2Items, col3Media, writing: writing || [] };
       const col2 = document.getElementById('col-thoughts');
       const col3 = document.getElementById('col-images');
       renderCol2(col2Items);
       renderImages(col3Media);
+      renderWriting(writing || []);
       setupReveal(col2);
       setupReveal(col3);
     })
