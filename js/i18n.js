@@ -24,7 +24,7 @@ window.I18N = {
       '* 首次按键无声？先点一下页面（浏览器自动播放策略）' +
       '</div>',
     social: [
-      { label: 'RED/田睿安', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
+      { label: 'RED/TIANRUIAN', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
       { label: 'GitHub/realruian', href: 'https://github.com/realruian' },
       { label: 'mail/realruian@gmail.com', href: 'mailto:realruian@gmail.com' }
     ],
