@@ -284,6 +284,7 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 #col-images .gallery-slide .img-wrap .entry-img {
   display: block;
   width: 100%;
+  height: auto;               /* 关键：撤销 HTML height attribute，让 aspect-ratio 生效 */
   aspect-ratio: 3 / 2;
   object-fit: cover;
 }
@@ -296,7 +297,7 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   margin-top: 12px;
 }
 .thought-images .img-wrap { overflow: hidden; }
-.thought-images .entry-img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.thought-images .entry-img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
 
 /* howto: 置顶的玩法说明，用淡色文字和普通 entry 区分 */
 .how-to-entry { margin-bottom: 40px; }
