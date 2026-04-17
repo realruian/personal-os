@@ -68,14 +68,18 @@ python3 -c "import json; json.load(open('content/data.json'))"
 - `robots.txt` 禁 `/admin.html` 索引的规则
 - 根目录 `DESIGN.md` — 视觉设计规范，要改样式先看它
 
-## ⚠️ 已知未解决问题
+## 经验教训
 
-**Col 3 图片刷新时变扁的 flicker**（2026-04-18 深夜遗留）
-- 首次打开没问题，**刷新时**图片瞬间被显示成更扁的比例，然后回到 3:2
-- 尝试过 6 次修复都没解决：parent aspect-ratio / img aspect-ratio / padding-bottom / contain:size / img opacity:0 / try/catch try/catch...
-- Console 诊断证明稳定态 `.img-wrap` 一直是 3:2，变形只发生在刷新的一帧内
-- 放弃瞎修，CSS 已回到 `ea96ee9` 的简单状态
-- **下次再啃前的前置**：必须拿到变形瞬间的 DevTools 精确数据（Elements computed panel 截图 / Performance 录制 reload），不要再凭假设改代码
+**shader-init 标志的时序要求**（2026-04-18 修复 flicker 沉淀）
+- `data-shader-init` 同时承担两个职责：① shader 防重复 init；② CSS `:not()::after` 占位让位
+- **必须等 React mount + WebGL 编译 + 首帧 paint 才能设**（root.render 之后再 double RAF），否则占位提早消失，露出原图 → halftone 的视觉切换 = flicker
+- 防重复 init 用内部 flag（`wrap._shaderStarted`）解耦，不要让 CSS 状态被异步流程提前触发
+
+**诊断时序 race 不要只看 box 几何**（flicker 6 次失败的根本原因）
+- 之前一直从 layout 维度修（aspect-ratio / contain / padding-bottom）—— 全错方向
+- 真凶是**像素层面的视觉切换**：`performance.getEntriesByType('layout-shift')` 一直是空数组就该警觉，box 没动 ≠ 没 flicker
+- 排查 race 时序：用 `performance.getEntriesByType('resource')` 看资源加载时刻，用 `drawImage + getImageData` 验证 img 像素 vs 屏幕像素是否一致，用截屏看实际渲染
+- "本地丝滑、线上 flicker" 几乎一定是网络 RTT 把 race window 从 ~0ms 拉到 ~500ms，**不是 Vercel 性能问题**
 
 ## 参考
 
