@@ -98,6 +98,13 @@ async function ghDelete(path, sha, message) {
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function getAnthropicKey() { return localStorage.getItem(ANTHROPIC_KEY); }
 
+// HTML 转义，防 XSS。admin 渲染远端 data.json 内容前用
+function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -172,13 +179,13 @@ function renderPreview() {
   // 先显示保留的旧图（编辑态），再显示新选的
   const kept = keptImageUrls.map((url, i) =>
     `<div class="preview-item">
-       <img src="/${url}" alt="">
+       <img src="/${escapeHtml(url)}" alt="">
        <button type="button" class="preview-remove" data-kept="${i}">×</button>
      </div>`
   ).join('');
   const fresh = selectedFiles.map((item, i) =>
     `<div class="preview-item">
-       <img src="${item.blobUrl}" alt="">
+       <img src="${escapeHtml(item.blobUrl)}" alt="">
        <button type="button" class="preview-remove" data-new="${i}">×</button>
      </div>`
   ).join('');
@@ -479,15 +486,15 @@ async function loadEntries() {
         ? (e.text_zh || e.text || '').slice(0, 60).replace(/\s+/g, ' ')
         : (e.caption_zh || e.captionHtml_zh || '').slice(0, 40);
       const imgTag = e.__type === 'image' || e.type === 'image'
-        ? `<img src="/${e.url}" alt="">`
-        : (e.images && e.images[0] ? `<img src="/${e.images[0].url}" alt="">` : '');
+        ? `<img src="/${escapeHtml(e.url)}" alt="">`
+        : (e.images && e.images[0] ? `<img src="/${escapeHtml(e.images[0].url)}" alt="">` : '');
       const kindLabel = e.__type === 'thought'
         ? (e.featured ? '★ thought' : 'thought')
         : (e.type === 'gallery' ? 'gallery' : 'image');
-      return `<div class="entry-row" data-ts="${e.ts}" data-kind="${e.__type}">
+      return `<div class="entry-row" data-ts="${escapeHtml(e.ts)}" data-kind="${escapeHtml(e.__type)}">
         <div class="entry-meta">
           <div class="entry-meta-time">${kindLabel} · ${fmtDate(e.ts)}</div>
-          <div class="entry-meta-preview">${imgTag}${preview || '(无文字)'}</div>
+          <div class="entry-meta-preview">${imgTag}${escapeHtml(preview) || '(无文字)'}</div>
         </div>
         <div class="entry-actions">
           <button type="button" class="entry-action-btn" data-action="edit">edit</button>
