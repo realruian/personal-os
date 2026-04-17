@@ -221,6 +221,12 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   pointer-events: none;
 }
 
+/* Shader 未 ready 时 img 本身透明，避免 CSS object-fit cover 和 shader fit cover
+   两种裁切算法切换时的视觉跳动（"变扁"错觉） */
+.img-wrap:not([data-shader-init="1"]) .entry-img {
+  opacity: 0;
+}
+
 /* Lightbox：点击图片全屏看原图 */
 .lightbox {
   position: fixed;
