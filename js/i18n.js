@@ -30,7 +30,7 @@ window.I18N = {
       '  · 滚轮悬停中 / 右列可独立滚该列\n\n' +
       '其他：\n' +
       '  · 左下角可切换「中 / EN」\n' +
-      '  · 移动端点击左上角 logo 的 Y / O / U / ! 切换模式\n\n' +
+      '  · 移动端点击左上角 logo 的 T / I / A / N 切换模式\n\n' +
       '* 首次按键无声？先点一下页面（浏览器自动播放策略）' +
       '</div>',
     social: [
@@ -68,7 +68,7 @@ window.I18N = {
       '  · wheel inside middle / right column scrolls that column only\n\n' +
       'more:\n' +
       '  · switch 中 / EN at the bottom-left\n' +
-      '  · on mobile, tap Y / O / U / ! on the logo to change mode\n\n' +
+      '  · on mobile, tap T / I / A / N on the logo to change mode\n\n' +
       '* first keypress silent? click once on the page (browser autoplay policy)' +
       '</div>',
     social: [
