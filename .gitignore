@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+crawl-output/
+*.log
+.env
+.env.local
+.vercel

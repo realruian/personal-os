@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>田睿安 · 个人站</title>
+  <meta name="description" content="田睿安 — 美团 AI 产品工程专家">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="田睿安">
+  <meta property="og:description" content="美团 AI 产品工程专家">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+
+    <!-- Col 1 — 身份 -->
+    <div class="col col-1">
+      <!-- 占位 logo：四个字母 "YOU!"，每个字母点击切换一个主题（对齐原站 4 字母逻辑） -->
+      <svg class="logo" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TIAN">
+        <g class="logo-letter" data-mode="day">
+          <text x="0" y="28" fill="black" font-family="Fragment Mono, monospace" font-size="28" font-weight="500">T</text>
+        </g>
+        <g class="logo-letter" data-mode="summer">
+          <text x="28" y="28" fill="black" font-family="Fragment Mono, monospace" font-size="28" font-weight="500">I</text>
+        </g>
+        <g class="logo-letter" data-mode="night">
+          <text x="60" y="28" fill="black" font-family="Fragment Mono, monospace" font-size="28" font-weight="500">A</text>
+        </g>
+        <g class="logo-letter" data-mode="chaos">
+          <text x="90" y="28" fill="black" font-family="Fragment Mono, monospace" font-size="28" font-weight="500">N</text>
+        </g>
+      </svg>
+
+      <p data-i18n="intro"></p>
+
+      <div class="section">
+        <div class="section-title" data-i18n="artifacts_title"></div>
+        <div class="links" id="artifacts-links"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title" data-i18n="lab_title"></div>
+        <div class="links" id="lab-links"></div>
+      </div>
+
+      <div class="social-fixed">
+        <div class="lang-switch">
+          <button type="button" class="lang-btn" data-lang="zh">中</button>
+          <span class="lang-sep">/</span>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <div class="section-title" data-i18n="social_title"></div>
+        <div class="links" id="social-links"></div>
+      </div>
+
+    </div>
+
+    <!-- Col 2 — thoughts / voice / video 时间线 -->
+    <div class="col" id="col-thoughts">
+      <div class="entry how-to-entry visible" data-i18n="howto"></div>
+      <div class="col-loader">loading<span class="col-loader-cursor">_</span></div>
+    </div>
+
+    <!-- Col 3 — 图片 / 画廊 -->
+    <div class="col" id="col-images">
+      <div class="col-loader">loading<span class="col-loader-cursor">_</span></div>
+    </div>
+
+  </div>
+
+  <!-- 氛围叠加层（视频/音频） -->
+  <video id="leaves-overlay" src="assets/leaves.mp4" loop muted playsinline preload="none"></video>
+  <audio id="forest-audio"   src="assets/forest.mp3" loop preload="none"></audio>
+  <video id="moon-overlay"   src="assets/moon.mp4"   loop muted playsinline preload="none"></video>
+  <audio id="night-audio"    src="assets/night.mp3"  loop preload="none"></audio>
+  <video id="rain-overlay"   src="assets/rain.mp4"   loop muted playsinline preload="none"></video>
+  <audio id="rain-audio"     src="assets/rain.mp3"   loop preload="none"></audio>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/themes.js"></script>
+  <script src="js/chaos.js"></script>
+  <script type="module" src="js/shaders.js"></script>
+</body>
+</html>

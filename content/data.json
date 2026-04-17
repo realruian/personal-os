@@ -1,0 +1,28 @@
+{
+  "thoughts": [
+    {
+      "type": "thought",
+      "ts": 1744848000000,
+      "featured": true,
+      "featured_ts": 1744848000000,
+      "text_zh": "Claude Design 不仅仅是一款新工具。\n\n它标志着 Anthropic 的发展方向：从打造最佳语言模型，转向成为非技术人士的工作操作系统。\n\n本周，他们发布了 Opus 4.7、面向智能体的常规任务功能、为开发者重新设计的桌面端，以及现在面向所有其他用户的 Design。\n\n生态系统正在闭环。每一个新组件都让其他部分变得更有价值。",
+      "text_en": "Claude Design isn't just another new tool.\n\nIt signals where Anthropic is heading: from building the best language model toward becoming a work OS for non-technical people.\n\nThis week they shipped Opus 4.7, agent-oriented routine task features, a redesigned desktop for developers, and now Design for everyone else.\n\nThe ecosystem is closing its loop. Every new piece makes the others more valuable."
+    }
+  ],
+  "images": [
+    {
+      "type": "image",
+      "ts": 1744848000000,
+      "url": "https://images.unsplash.com/photo-1481487196290-c152efe083f5?w=800&q=80",
+      "caption_zh": "占位图 · 等你给我真实图片",
+      "caption_en": "placeholder · real photos coming soon"
+    },
+    {
+      "type": "image",
+      "ts": 1744761600000,
+      "url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+      "caption_zh": "hover 看原图（移除半调点阵）",
+      "caption_en": "hover to peek under the halftone"
+    }
+  ]
+}
