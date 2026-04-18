@@ -216,8 +216,8 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   position: absolute;
   inset: 0;
   background-color: var(--bg);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='17.32' viewBox='0 0 10 17.32'><circle cx='0' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='10' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='5' cy='8.66' r='1.2' fill='%232B2B2B'/><circle cx='0' cy='17.32' r='1.2' fill='%232B2B2B'/><circle cx='10' cy='17.32' r='1.2' fill='%232B2B2B'/></svg>");
-  background-size: 10px 17.32px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='10.39' viewBox='0 0 6 10.39'><circle cx='0' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='6' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='3' cy='5.196' r='1.2' fill='%232B2B2B'/><circle cx='0' cy='10.39' r='1.2' fill='%232B2B2B'/><circle cx='6' cy='10.39' r='1.2' fill='%232B2B2B'/></svg>");
+  background-size: 6px 10.39px;
   z-index: 2;
   pointer-events: none;
 }
