@@ -57,6 +57,11 @@ python3 -c "import json; json.load(open('content/data.json'))"
 **YOU MUST：三处 repo 名必须一致**
 `admin.js` 的 `REPO_NAME` / PAT 的 Repository access / Vercel 项目接的 repo —— 任一不一致发布就 403 或推不到正确的部署。改 repo 名时三处都要同步改。
 
+**图片自动压缩**（`admin.js` 的 `compressImage`）
+- 上传前 Canvas resize 到最大 2000px + `toBlob('image/webp', 0.85)`；不支持 WebP 则回退 JPEG；GIF 原样保留动图；压后比原图大就用原文件
+- 典型手机 3-5MB 原图 → 300-500KB。发图不用手动压
+- 历史图片一次性清理用 macOS `sips`（保留 .jpg 扩展名不动 data.json，零 url 迁移风险）：`sips -Z 2000 -s format jpeg -s formatOptions 80 file.jpg --out file.jpg`
+
 ## 内容字段约定（data.json）
 
 顶层结构：`{ thoughts: [], images: [], writing: [] }`
@@ -66,12 +71,21 @@ python3 -c "import json; json.load(open('content/data.json'))"
 - gallery（→ Col 3）：`{ type: 'gallery', ts, images: [{url}], captionHtml_zh?, captionHtml_en? }`
 - writing（→ Col 1 Writing 区）：`{ type: 'writing', ts, title_zh, title_en?, url }`
 
+## 安全 & CDN
+
+- `vercel.json` 配了 security headers（HSTS 2y + includeSubDomains / X-Frame-Options DENY / X-Content-Type-Options / Referrer-Policy / Permissions-Policy / admin.html 额外 X-Robots-Tag）
+- HSTS **没加 preload**，保持可逆。要加 preload 需去 `hstspreload.org` 手动提交
+- **不加 CSP**：esm.sh 动态 import + inline script + MP4/MP3 容易误伤 shader / chaos
+- **esm.sh CDN 锁版本**：三个模块锁死 `@18.3.1`（`index.html:20-22` modulepreload + `js/shaders.js:5-7` import）。改 React 版本要**同步改 6 处**，否则 modulepreload 和运行时 import 版本不一致会重复下载
+- **SRI / 自托管都没做**：esm.sh 对同 URL 按 `vary: User-Agent` 返回不同 transformer 产物，SRI hash 必 mismatch → shader 被拒加载；esm.sh 产物是递归 re-export 链，自托管要递归镜像复杂。当前接受"锁版本 + 信任 esm.sh 完整性"的方案
+
 ## 不要动
 
 - `assets/*.mp4` / `assets/*.mp3` — 从 dany.works 下载的素材，公开发布前不可未经同意改或再分发
 - `.vercel/` — Vercel CLI 缓存，已在 .gitignore
 - `robots.txt` 禁 `/admin.html` 索引的规则
 - 根目录 `DESIGN.md` — 视觉设计规范，要改样式先看它
+- `vercel.json` 的 security headers 组合 —— 改任何一项前评估对生产的影响
 
 ## 经验教训
 
@@ -79,6 +93,11 @@ python3 -c "import json; json.load(open('content/data.json'))"
 - `data-shader-init` 同时承担两个职责：① shader 防重复 init；② CSS `:not()::after` 占位让位
 - **必须等 React mount + WebGL 编译 + 首帧 paint 才能设**（root.render 之后再 double RAF），否则占位提早消失，露出原图 → halftone 的视觉切换 = flicker
 - 防重复 init 用内部 flag（`wrap._shaderStarted`）解耦，不要让 CSS 状态被异步流程提前触发
+
+**生产站红线：默认保守**（2026-04-18 沉淀）
+- `tianruian.com` 是线上站，改动优先级 **安全 > 可用性 > 完美度**
+- 不做"理论更好但风险高"的改动（如 esm.sh SRI / 自托管 / admin pre-gate / HSTS preload），选最小有效改动（如 CDN 版本锁、历史图片压缩保留扩展名）
+- 持久化决策（HSTS preload、force push、DNS）先想回滚路径，想不清就不做
 
 **诊断时序 race 不要只看 box 几何**（flicker 6 次失败的根本原因）
 - 之前一直从 layout 维度修（aspect-ratio / contain / padding-bottom）—— 全错方向
