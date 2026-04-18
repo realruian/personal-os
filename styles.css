@@ -209,14 +209,15 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
 .entry-caption { color: var(--text); margin-top: 8px; word-break: break-word; }
 .entry-img[loading="lazy"] { background: var(--line); }
 
-/* Shader 未 ready 时 CSS 点阵占位：盖住原图，避免首屏看到清晰原图再"粘"上 shader */
+/* Shader 未 ready 时 CSS 点阵占位：SVG hex pattern + #2B2B2B 硬编码匹配 shader colorFront
+   盖住原图，避免首屏看到清晰原图再"粘"上 shader。点色不跟主题（shader 本身也不跟主题） */
 .img-wrap:not([data-shader-init="1"])::after {
   content: '';
   position: absolute;
   inset: 0;
   background-color: var(--bg);
-  background-image: radial-gradient(circle, var(--mid) 0.8px, transparent 1.2px);
-  background-size: 5px 5px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='17.32' viewBox='0 0 10 17.32'><circle cx='0' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='10' cy='0' r='1.2' fill='%232B2B2B'/><circle cx='5' cy='8.66' r='1.2' fill='%232B2B2B'/><circle cx='0' cy='17.32' r='1.2' fill='%232B2B2B'/><circle cx='10' cy='17.32' r='1.2' fill='%232B2B2B'/></svg>");
+  background-size: 10px 17.32px;
   z-index: 2;
   pointer-events: none;
 }
