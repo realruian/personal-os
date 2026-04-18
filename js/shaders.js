@@ -2,9 +2,9 @@
 // HalftoneDots shader 覆盖图片
 // 出视口自动卸载 WebGL RAF，节省 GPU
 // ──────────────────────────────────────────────
-import React from 'https://esm.sh/react@18';
-import { createRoot } from 'https://esm.sh/react-dom@18/client';
-import { HalftoneDots } from 'https://esm.sh/@paper-design/shaders-react@0.0.72?deps=react@18,react-dom@18';
+import React from 'https://esm.sh/react@18.3.1';
+import { createRoot } from 'https://esm.sh/react-dom@18.3.1/client';
+import { HalftoneDots } from 'https://esm.sh/@paper-design/shaders-react@0.0.72?deps=react@18.3.1,react-dom@18.3.1';
 
 const shaderProps = {
   contrast: 0.4, originalColors: false, inverted: false,
