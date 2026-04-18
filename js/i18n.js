@@ -24,6 +24,16 @@ window.I18N = {
       '  C — 混沌 · 一切坍塌，再按归位\n\n' +
       '* 没声音？点一下页面' +
       '</div>',
+    howto_mobile:
+      '<div class="entry-text">' +
+      'howto · 玩法\n\n' +
+      '点 logo 字母：\n' +
+      '  T — 白昼 · 暖白底\n' +
+      '  I — 晚夏 / 雨天（点一下切换）\n' +
+      '  A — 夜晚 / 深夜（点一下切换）\n' +
+      '  N — 混沌 · 一切坍塌，再点归位\n\n' +
+      '* 没声音？先点一下屏幕' +
+      '</div>',
     social: [
       { label: 'RED/TIANRUIAN', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
       { label: 'GitHub/realruian', href: 'https://github.com/realruian' },
@@ -52,6 +62,16 @@ window.I18N = {
       '  C — chaos · collapse all; press to restore\n\n' +
       '* silent? click the page once' +
       '</div>',
+    howto_mobile:
+      '<div class="entry-text">' +
+      'howto · how to play\n\n' +
+      'tap the logo letters:\n' +
+      '  T — day · warm white\n' +
+      '  I — summer / rain (tap to cycle)\n' +
+      '  A — night / midnight (tap to cycle)\n' +
+      '  N — chaos · tap again to restore\n\n' +
+      '* silent? tap the screen once' +
+      '</div>',
     social: [
       { label: 'RED/TIANRUIAN', href: 'https://www.xiaohongshu.com/user/profile/6388506d000000001f017d47' },
       { label: 'GitHub/realruian', href: 'https://github.com/realruian' },
@@ -71,8 +91,13 @@ function applyI18n(lang) {
   document.title = dict.title;
 
   // 静态文本节点替换
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
+    let key = el.dataset.i18n;
+    // howto 桌面 / 移动分两份文案，其它 key 保持一致
+    if (key === 'howto' && isMobile && dict.howto_mobile != null) {
+      key = 'howto_mobile';
+    }
     if (dict[key] == null) return;
     el.innerHTML = dict[key];
   });
@@ -108,6 +133,11 @@ if (document.readyState === 'loading') {
 } else {
   applyI18n('zh');
 }
+
+// 跨 768px 阈值时重新渲染（桌面 ↔ 移动切换 howto 文案）
+window.matchMedia('(max-width: 768px)').addEventListener('change', () => {
+  applyI18n(window.CURRENT_LANG);
+});
 
 // 事件委托：避免按钮绑定时机或 DOM 结构变化导致失效
 document.addEventListener('click', (e) => {
