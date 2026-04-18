@@ -79,44 +79,36 @@
   });
 
   // ── Mobile logo 字母 tap 切换 ─────────────
-  let _summerCycle = 0; // 0→summer, 1→rain
-  let _nightCycle  = 0; // 0→night,  1→midnight
-
+  // 从 body.classList 实时推断当前态，不用状态变量，避免和键盘快捷键 / 默认态不同步
   document.querySelectorAll('.logo-letter[data-mode]').forEach(el => {
     el.addEventListener('touchend', e => {
       e.preventDefault();
       const mode = el.dataset.mode;
+      const cls  = document.body.classList;
 
       if (mode === 'day') {
-        document.body.classList.add('light');
+        cls.add('light');
         stopSummer(); stopMidnight(); stopRain();
-        _summerCycle = 0; _nightCycle = 0;
       } else if (mode === 'night') {
         stopSummer(); stopRain();
-        if (_nightCycle === 0) {
-          document.body.classList.remove('light', 'leaves');
+        cls.remove('light', 'leaves');
+        if (cls.contains('midnight')) {
           stopMidnight();
-          _nightCycle = 1;
         } else {
-          document.body.classList.remove('light', 'leaves');
-          stopMidnight();
-          document.body.classList.add('midnight');
+          cls.add('midnight');
           safePlay(mv()); safePlay(ma());
-          _nightCycle = 0;
         }
       } else if (mode === 'summer') {
         stopMidnight();
-        if (_summerCycle === 0) {
-          stopRain();
-          document.body.classList.add('light', 'leaves');
-          safePlay(v()); safePlay(a());
-          _summerCycle = 1;
-        } else {
+        if (cls.contains('leaves')) {
           stopSummer();
-          document.body.classList.remove('leaves');
-          document.body.classList.add('light', 'rain');
+          cls.remove('leaves');
+          cls.add('light', 'rain');
           safePlay(rv()); safePlay(ra());
-          _summerCycle = 0;
+        } else {
+          stopRain();
+          cls.add('light', 'leaves');
+          safePlay(v()); safePlay(a());
         }
       } else if (mode === 'chaos') {
         if (typeof window.activateChaos === 'function') window.activateChaos();
