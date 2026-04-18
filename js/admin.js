@@ -124,6 +124,39 @@ function fileToBase64(file) {
   });
 }
 
+// 上传前压缩：resize 到最大 2000px + 转 WebP（不支持则 JPEG）。GIF 跳过，保留动图
+async function compressImage(file, maxDim = 2000, quality = 0.85) {
+  if (file.type === 'image/gif') return { blob: file, ext: 'gif' };
+  const url = URL.createObjectURL(file);
+  let img;
+  try {
+    img = await new Promise((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => reject(new Error('image decode failed'));
+      el.src = url;
+    });
+  } catch (e) {
+    URL.revokeObjectURL(url);
+    return { blob: file, ext: guessExt(file) };
+  }
+  const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const w = Math.max(1, Math.round(img.width * scale));
+  const h = Math.max(1, Math.round(img.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  URL.revokeObjectURL(url);
+  const webp = await new Promise((res) => canvas.toBlob((b) => res(b), 'image/webp', quality));
+  if (webp && webp.type === 'image/webp' && webp.size < file.size) {
+    return { blob: webp, ext: 'webp' };
+  }
+  const jpeg = await new Promise((res) => canvas.toBlob((b) => res(b), 'image/jpeg', quality));
+  if (jpeg && jpeg.size < file.size) return { blob: jpeg, ext: 'jpg' };
+  // 压完反而更大（已经高度压缩过的小图），用原文件
+  return { blob: file, ext: guessExt(file) };
+}
+
 function strToBase64(str) {
   const bytes = new TextEncoder().encode(str);
   let binary = '';
@@ -236,11 +269,12 @@ async function translateToEn(textZh) {
 async function uploadNewImages(ts) {
   const uploaded = [];
   for (let i = 0; i < selectedFiles.length; i++) {
-    showStatus(`上传图片 ${i + 1}/${selectedFiles.length}...`);
+    showStatus(`压缩图片 ${i + 1}/${selectedFiles.length}...`);
     const file = selectedFiles[i].file;
-    const ext = guessExt(file);
+    const { blob, ext } = await compressImage(file);
     const path = `assets/thoughts/${ts}-${i}.${ext}`;
-    const b64 = await fileToBase64(file);
+    showStatus(`上传图片 ${i + 1}/${selectedFiles.length}（${Math.round(blob.size / 1024)}KB）...`);
+    const b64 = await fileToBase64(blob);
     await ghPut(path, b64, null, `post: upload ${path}`);
     uploaded.push({ url: path });
   }
