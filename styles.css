@@ -263,6 +263,40 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   line-height: 1;
 }
 .lightbox-close:hover { color: #fff; }
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #606060;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 16px 20px;
+  line-height: 1;
+  transition: color 120ms;
+}
+.lightbox-prev { left: 0; }
+.lightbox-next { right: 0; }
+.lightbox-prev:hover,
+.lightbox-next:hover { color: #e0e0e0; }
+.lightbox-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #606060;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 11px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .lightbox-prev,
+  .lightbox-next { padding: 12px 14px; }
+}
 /* Col 3 / thought 图片加上可点手势 */
 #col-images .img-wrap,
 .thought-images .img-wrap { cursor: zoom-in; }

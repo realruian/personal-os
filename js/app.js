@@ -352,49 +352,92 @@ function initVoice(player) {
   });
 }
 
-// Lightbox：点击图片全屏展示（Col 3 图片 + Col 2 thought 内嵌图都支持）
+// Lightbox：点击图片全屏展示，支持左右翻页（← → 键 + 按钮）
+// Col 3 图片：在所有 Col 3 图片间翻页；thought 内嵌图：在同一 thought 内翻页
 (function() {
   let lb = null;
+  let allImgs = [];
+  let curIdx = 0;
+
+  function collectImages(wrap) {
+    if (wrap.closest('#col-images')) {
+      return Array.from(document.querySelectorAll('#col-images .img-wrap img'))
+        .filter(img => img.src).map(img => img.src);
+    }
+    const container = wrap.closest('.thought-images');
+    if (container) {
+      return Array.from(container.querySelectorAll('.img-wrap img'))
+        .filter(img => img.src).map(img => img.src);
+    }
+    return [];
+  }
 
   function ensureLightbox() {
     if (lb) return lb;
     lb = document.createElement('div');
     lb.className = 'lightbox';
-    lb.innerHTML = '<button type="button" class="lightbox-close" aria-label="close">×</button><img alt="">';
+    lb.innerHTML =
+      '<button type="button" class="lightbox-close" aria-label="close">×</button>' +
+      '<button type="button" class="lightbox-prev" aria-label="prev">◀</button>' +
+      '<img alt="">' +
+      '<button type="button" class="lightbox-next" aria-label="next">▶</button>' +
+      '<span class="lightbox-counter"></span>';
     document.body.appendChild(lb);
-    // 点背景 / 关闭按钮关闭
-    lb.addEventListener('click', (e) => {
-      if (e.target === lb || e.target.classList.contains('lightbox-close')) close();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lb.classList.contains('active')) close();
+    lb.querySelector('.lightbox-close').addEventListener('click', close);
+    lb.querySelector('.lightbox-prev').addEventListener('click', () => navigate(-1));
+    lb.querySelector('.lightbox-next').addEventListener('click', () => navigate(1));
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('active')) return;
+      if (e.key === 'Escape')      close();
+      if (e.key === 'ArrowLeft')   navigate(-1);
+      if (e.key === 'ArrowRight')  navigate(1);
     });
     return lb;
   }
 
-  function open(src) {
+  function updateNav() {
+    const multi   = allImgs.length > 1;
+    const counter = lb.querySelector('.lightbox-counter');
+    const btnPrev = lb.querySelector('.lightbox-prev');
+    const btnNext = lb.querySelector('.lightbox-next');
+    if (counter) counter.textContent = multi ? `${curIdx + 1} / ${allImgs.length}` : '';
+    if (btnPrev) btnPrev.style.visibility = (multi && curIdx > 0) ? 'visible' : 'hidden';
+    if (btnNext) btnNext.style.visibility = (multi && curIdx < allImgs.length - 1) ? 'visible' : 'hidden';
+  }
+
+  function navigate(dir) {
+    const next = curIdx + dir;
+    if (next < 0 || next >= allImgs.length) return;
+    curIdx = next;
+    lb.querySelector('img').src = allImgs[curIdx];
+    updateNav();
+  }
+
+  function open(src, wrap) {
+    allImgs = collectImages(wrap);
+    curIdx  = allImgs.indexOf(src);
+    if (curIdx === -1) { curIdx = 0; allImgs = [src]; }
     const el = ensureLightbox();
     el.querySelector('img').src = src;
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
+    updateNav();
   }
 
   function close() {
     if (!lb) return;
     lb.classList.remove('active');
     document.body.style.overflow = '';
-    // 延迟清 src，等淡出动画结束
     setTimeout(() => { if (!lb.classList.contains('active')) lb.querySelector('img').src = ''; }, 300);
   }
 
-  // 统一事件委托：Col 3 和 thought 内嵌图的 img-wrap 都响应
-  document.addEventListener('click', (e) => {
-    // 忽略 gallery 的导航按钮
-    if (e.target.closest('.gallery-btn')) return;
+  document.addEventListener('click', e => {
+    if (e.target.closest('.gallery-btn, .lightbox-prev, .lightbox-next, .lightbox-close')) return;
     const wrap = e.target.closest('#col-images .img-wrap, .thought-images .img-wrap');
     if (!wrap) return;
     const img = wrap.querySelector('img');
-    if (img && img.src) open(img.src);
+    if (img && img.src) open(img.src, wrap);
   });
 })();
 
@@ -468,7 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(r => r.json())
     .then(({ thoughts, images, writing }) => {
       const col2Media = images.filter(i => i.type === 'voice' || i.type === 'video' || i.type === 'video_note');
-      const col3Media = images.filter(i => !i.type || i.type === 'image' || i.type === 'gallery' || i.type === 'gif');
+      const col3Media = images
+        .filter(i => !i.type || i.type === 'image' || i.type === 'gallery' || i.type === 'gif')
+        .sort((a, b) => (b.ts || 0) - (a.ts || 0));
       const col2Items = [...thoughts, ...col2Media].sort((a, b) => {
         if (a.featured && !b.featured) return -1;
         if (!a.featured && b.featured) return 1;

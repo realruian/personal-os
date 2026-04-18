@@ -1,6 +1,7 @@
 // ──────────────────────────────────────────────
 // HalftoneDots shader 覆盖图片
 // 出视口自动卸载 WebGL RAF，节省 GPU
+// CDN_VERSION: 18.3.1 — 改版本要同步改此文件 line 5-7（3 处 import）和 index.html line 20-22（3 处 modulepreload），共 6 处
 // ──────────────────────────────────────────────
 import React from 'https://esm.sh/react@18.3.1';
 import { createRoot } from 'https://esm.sh/react-dom@18.3.1/client';

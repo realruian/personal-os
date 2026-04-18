@@ -30,8 +30,8 @@ python3 -c "import json; json.load(open('content/data.json'))"
 ## 架构硬约束（踩过的坑）
 
 - **Col 2 thoughts 按 ts 降序 + featured 置顶**（排序逻辑在 `js/app.js` 的 renderCol2 前）
-- **Col 3 images 按 `data.json` 数组位置渲染**（**不按 ts**！要调整顺序就改数组里的位置，改 ts 没用）
-- **Col 1 Writing 按 ts 降序 + 最多前 5 篇**（`renderWriting` 里 slice(0,5)；改 ts 即可调顺序，和 Col 3 不同）
+- **Col 3 images 按 `ts` 降序自动排**（改 ts 即可调顺序，和 Writing 一致；data.json 数组位置不影响展示顺序）
+- **Col 1 Writing 按 ts 降序 + 最多前 5 篇**（`renderWriting` 里 slice(0,5)；改 ts 即可调顺序）
 - 发布面板 `js/admin.js` 的 `REPO_NAME` 常量必须和 Vercel 接的 repo 名一致
 - 主题不持久化，刷新回默认（当前默认 `light leaves`，在 `<body>` class 上）
 - HalftoneDots shader 走 esm.sh CDN；`@property` 颜色 token 需要 Chromium 85+ / Safari 16.4+
