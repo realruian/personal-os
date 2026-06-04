@@ -1,6 +1,6 @@
 # Personal Website · tianruian.com
 
-纯静态 HTML + CSS + JS 个人站，灵感参考 dany.works。三列布局，发布面板在 `/admin.html`。
+纯静态 HTML + CSS + JS 个人站，极简三列信息流 + 可切换氛围。发布面板在 `/admin.html`。
 
 ## 技术栈
 - 纯 HTML / CSS / JS，**无构建工具**。修改后直接 commit push → Vercel 自动部署
@@ -81,7 +81,7 @@ python3 -c "import json; json.load(open('content/data.json'))"
 
 ## 不要动
 
-- `assets/*.mp4` / `assets/*.mp3` — 从 dany.works 下载的素材，公开发布前不可未经同意改或再分发
+- `assets/*.mp4` / `assets/*.mp3` — 第三方来源氛围素材，不可公开再分发
 - `.vercel/` — Vercel CLI 缓存，已在 .gitignore
 - `robots.txt` 禁 `/admin.html` 索引的规则
 - 根目录 `DESIGN.md` — 视觉设计规范，要改样式先看它
@@ -109,4 +109,3 @@ python3 -c "import json; json.load(open('content/data.json'))"
 
 - 整站设计规范：`DESIGN.md`
 - 用户面向的说明：`README.md`
-- 原参考站：https://dany.works
