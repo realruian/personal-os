@@ -463,8 +463,10 @@ function initVoice(player) {
 })();
 
 // 滚轮路由：鼠标在 col2/col3 直接滚该列；否则顺序 col2 → col3
+// 到顶/底继续滚时加 iOS 式橡皮筋回弹（中间区域仍 1:1 跟手；reduced-motion 下退回原行为）
 (function() {
   const desktop = () => window.matchMedia('(min-width: 769px)').matches;
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const col2 = document.getElementById('col-thoughts');
   const col3 = document.getElementById('col-images');
   if (!col2 || !col3) return;
@@ -474,6 +476,48 @@ function initVoice(player) {
   col3.addEventListener('mouseenter', () => hovered = col3);
   col3.addEventListener('mouseleave', () => hovered = null);
 
+  // 橡皮筋：每列独立的 overscroll 位移 + 回弹动画
+  const MAX_PULL = 150;
+  const rubber = new Map();   // col -> { offset, raf }
+  let releaseTimer = null;
+
+  function setOffset(col, offset) {
+    const s = rubber.get(col) || {};
+    s.offset = offset;
+    rubber.set(col, s);
+    col.style.transform = offset ? `translateY(${offset.toFixed(2)}px)` : '';
+  }
+
+  function pull(col, delta) {
+    const cur = rubber.get(col)?.offset || 0;
+    // 阻尼：拉得越远越难，模拟 iOS 橡皮筋手感
+    const damp = 0.5 * Math.exp(-Math.abs(cur) / 90);
+    let next = cur + delta * damp;
+    // 反向滚动消解橡皮筋时穿过 0 → 归零，让后续回到正常滚动
+    if (cur !== 0 && Math.sign(next) !== Math.sign(cur)) next = 0;
+    next = Math.max(-MAX_PULL, Math.min(MAX_PULL, next));
+    setOffset(col, next);
+  }
+
+  function release(col) {
+    const s = rubber.get(col);
+    if (!s || !s.offset) return;
+    const start = s.offset, t0 = performance.now(), dur = 450;
+    cancelAnimationFrame(s.raf);
+    (function step(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);   // ease-out 回弹
+      setOffset(col, start * (1 - eased));
+      if (p < 1) s.raf = requestAnimationFrame(step);
+      else setOffset(col, 0);
+    })(t0);
+  }
+
+  function scheduleRelease() {
+    clearTimeout(releaseTimer);
+    releaseTimer = setTimeout(() => { release(col2); release(col3); }, 70);
+  }
+
   document.addEventListener('wheel', function(e) {
     if (!desktop()) return;
     e.preventDefault();
@@ -481,11 +525,20 @@ function initVoice(player) {
     if (e.deltaMode === 1) dy *= 24;
     if (e.deltaMode === 2) dy *= window.innerHeight;
 
-    if (hovered === col2 || hovered === col3) {
-      hovered.scrollTop += dy;
+    const target = (hovered === col2 || hovered === col3) ? hovered : col2;
+
+    if (reduceMotion()) { target.scrollTop += dy; return; }
+
+    const offset = rubber.get(target)?.offset || 0;
+    const atTop = target.scrollTop <= 0;
+    const atBottom = target.scrollTop >= target.scrollHeight - target.clientHeight - 1;
+
+    if (offset !== 0 || (atTop && dy < 0) || (atBottom && dy > 0)) {
+      // 边界外侧继续滚，或正处于橡皮筋位移中 → 拉伸 + 安排回弹
+      pull(target, -dy);
+      scheduleRelease();
     } else {
-      // 鼠标不在任何列上 → 默认只滚 col2，不再接替滚 col3
-      col2.scrollTop += dy;
+      target.scrollTop += dy;
     }
   }, { passive: false });
 })();
