@@ -27,121 +27,132 @@
       </p>
     </section>
 
-    <!-- 已登录：发布表单 -->
+    <!-- 已登录：发布 + 管理 -->
     <section id="post-section" class="card hidden">
       <header class="post-header">
-        <h1 class="admin-title">post · 发布</h1>
-        <button type="button" id="logout-btn" class="btn-link">logout</button>
+        <h1 class="admin-title">内容后台</h1>
+        <button type="button" id="logout-btn" class="btn-link">退出登录</button>
       </header>
 
-      <!-- 模式切换：想法 / 图片 / 文章 -->
-      <div class="tab-switch">
-        <button type="button" class="tab-btn active" data-mode="thought">thought · 想法</button>
-        <button type="button" class="tab-btn" data-mode="photo">photo · 图片</button>
-        <button type="button" class="tab-btn" data-mode="writing">writing · 文章</button>
+      <!-- 一级视图切换：发布 / 管理 -->
+      <div class="view-switch">
+        <button type="button" class="view-tab active" data-view="post">＋ 发布新内容</button>
+        <button type="button" class="view-tab" data-view="manage">☰ 管理已发布</button>
       </div>
 
-      <!-- thought 模式：文字 -->
-      <div id="thought-fields" class="mode-fields">
-        <div class="field">
-          <label class="field-label">中文（必填）</label>
-          <textarea id="text-zh" placeholder="今天想写点什么…" rows="5"></textarea>
+      <!-- ════════ 发布视图 ════════ -->
+      <div id="view-post" class="view-panel">
+        <p class="view-desc">先选类型，填好内容点「发布」。<b>想法</b>进中间栏，<b>图片</b>进右栏，<b>文章</b>进左栏 Writing。</p>
+
+        <!-- 模式切换：想法 / 图片 / 文章 -->
+        <div class="tab-switch">
+          <button type="button" class="tab-btn active" data-mode="thought">💭 想法</button>
+          <button type="button" class="tab-btn" data-mode="photo">🖼 图片</button>
+          <button type="button" class="tab-btn" data-mode="writing">📄 文章</button>
         </div>
 
-        <div class="field">
-          <label class="field-label">
-            English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
-          </label>
-          <textarea id="text-en" placeholder="same thought, in english…" rows="3"></textarea>
-        </div>
-      </div>
+        <!-- thought 模式：文字 -->
+        <div id="thought-fields" class="mode-fields">
+          <div class="field">
+            <label class="field-label">中文（必填）</label>
+            <textarea id="text-zh" placeholder="今天想写点什么…" rows="5"></textarea>
+          </div>
 
-      <!-- photo 模式：caption + gallery -->
-      <div id="photo-fields" class="mode-fields hidden">
-        <div class="field">
-          <label class="field-label">caption 中文 <span class="field-optional">（可选）</span></label>
-          <input type="text" id="caption-zh" placeholder="一句话配图">
+          <div class="field">
+            <label class="field-label">
+              English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
+            </label>
+            <textarea id="text-en" placeholder="same thought, in english…" rows="3"></textarea>
+          </div>
         </div>
-        <div class="field">
-          <label class="field-label">caption English <span class="field-optional">（可选）</span></label>
-          <input type="text" id="caption-en" placeholder="one-line caption">
+
+        <!-- photo 模式：caption + gallery -->
+        <div id="photo-fields" class="mode-fields hidden">
+          <div class="field">
+            <label class="field-label">配文 中文 <span class="field-optional">（可选）</span></label>
+            <input type="text" id="caption-zh" placeholder="一句话配图">
+          </div>
+          <div class="field">
+            <label class="field-label">配文 English <span class="field-optional">（可选）</span></label>
+            <input type="text" id="caption-en" placeholder="one-line caption">
+          </div>
+          <div class="field field-inline">
+            <label class="checkbox">
+              <input type="checkbox" id="gallery-check">
+              <span>多张图打包成一个画廊</span>
+            </label>
+          </div>
         </div>
-        <div class="field field-inline">
+
+        <!-- writing 模式：文章标题 + URL -->
+        <div id="writing-fields" class="mode-fields hidden">
+          <div class="field">
+            <label class="field-label">标题中文（必填）</label>
+            <input type="text" id="title-zh" placeholder="文章标题">
+          </div>
+          <div class="field">
+            <label class="field-label">
+              标题 English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
+            </label>
+            <input type="text" id="title-en" placeholder="article title in english">
+          </div>
+          <div class="field">
+            <label class="field-label">URL（必填）</label>
+            <input type="url" id="writing-url" placeholder="https://mp.weixin.qq.com/s/...">
+          </div>
+          <p class="admin-hint" style="margin-top:-8px">最多显示前 5 篇（按时间倒序）。改时间戳可调顺序。</p>
+        </div>
+
+        <!-- 共享：图片上传（thought / photo 用） -->
+        <div class="field" id="image-upload-field">
+          <label class="field-label">配图 <span class="field-optional">（点击 / 拖拽 / 粘贴，可多张）</span></label>
+          <div id="drop-zone" class="drop-zone">
+            <input type="file" id="file-input" accept="image/*" multiple hidden>
+            <span class="drop-hint">+ 添加图片 或 直接拖进来</span>
+          </div>
+          <div id="preview-grid" class="preview-grid"></div>
+        </div>
+
+        <!-- 共享：选项（thought / photo 用） -->
+        <div class="field field-inline" id="options-field">
           <label class="checkbox">
-            <input type="checkbox" id="gallery-check">
-            <span>多张图打包成一个画廊</span>
+            <input type="checkbox" id="featured-check">
+            <span>置顶（featured）</span>
+          </label>
+          <label class="checkbox" id="translate-wrapper" style="margin-left: 24px">
+            <input type="checkbox" id="translate-check">
+            <span>自动翻译英文（需 Anthropic key）</span>
           </label>
         </div>
+
+        <div class="actions">
+          <button type="button" id="cancel-btn" class="btn btn-ghost">清空</button>
+          <button type="button" id="publish-btn" class="btn btn-primary">发布</button>
+        </div>
+
+        <div id="status" class="status hidden"></div>
+
+        <!-- 设置：Anthropic API key -->
+        <details class="settings-details">
+          <summary>⚙ 高级设置（自动翻译 API Key）</summary>
+          <div class="field" style="margin-top: 16px">
+            <label class="field-label">
+              Anthropic API Key <span class="field-optional">（用于自动翻译，留空则不启用）</span>
+            </label>
+            <input type="password" id="anthropic-key-input" placeholder="sk-ant-..." autocomplete="off">
+            <button type="button" id="save-anthropic-btn" class="btn-link" style="margin-top: 8px">保存</button>
+            <span id="anthropic-status" class="field-optional" style="margin-left: 8px"></span>
+          </div>
+        </details>
       </div>
 
-      <!-- writing 模式：文章标题 + URL -->
-      <div id="writing-fields" class="mode-fields hidden">
-        <div class="field">
-          <label class="field-label">标题中文（必填）</label>
-          <input type="text" id="title-zh" placeholder="文章标题">
-        </div>
-        <div class="field">
-          <label class="field-label">
-            标题 English <span class="field-optional">（可选，留空则英文模式也显示中文）</span>
-          </label>
-          <input type="text" id="title-en" placeholder="article title in english">
-        </div>
-        <div class="field">
-          <label class="field-label">URL（必填）</label>
-          <input type="url" id="writing-url" placeholder="https://mp.weixin.qq.com/s/...">
-        </div>
-        <p class="admin-hint" style="margin-top:-8px">最多显示前 5 篇（按时间倒序）。改时间戳可调顺序。</p>
-      </div>
-
-      <!-- 共享：图片上传（thought / photo 用） -->
-      <div class="field" id="image-upload-field">
-        <label class="field-label">配图 <span class="field-optional">（点击 / 拖拽 / 粘贴，可多张）</span></label>
-        <div id="drop-zone" class="drop-zone">
-          <input type="file" id="file-input" accept="image/*" multiple hidden>
-          <span class="drop-hint">+ 添加图片 或 直接拖进来</span>
-        </div>
-        <div id="preview-grid" class="preview-grid"></div>
-      </div>
-
-      <!-- 共享：选项（thought / photo 用） -->
-      <div class="field field-inline" id="options-field">
-        <label class="checkbox">
-          <input type="checkbox" id="featured-check">
-          <span>featured · 置顶</span>
-        </label>
-        <label class="checkbox" id="translate-wrapper" style="margin-left: 24px">
-          <input type="checkbox" id="translate-check">
-          <span>自动翻译英文（需 Anthropic key）</span>
-        </label>
-      </div>
-
-      <div class="actions">
-        <button type="button" id="cancel-btn" class="btn btn-ghost">清空</button>
-        <button type="button" id="publish-btn" class="btn btn-primary">发布</button>
-      </div>
-
-      <div id="status" class="status hidden"></div>
-
-      <!-- 设置：Anthropic API key -->
-      <details class="settings-details">
-        <summary>settings · 高级设置</summary>
-        <div class="field" style="margin-top: 16px">
-          <label class="field-label">
-            Anthropic API Key <span class="field-optional">（用于自动翻译，留空则不启用）</span>
-          </label>
-          <input type="password" id="anthropic-key-input" placeholder="sk-ant-..." autocomplete="off">
-          <button type="button" id="save-anthropic-btn" class="btn-link" style="margin-top: 8px">保存</button>
-          <span id="anthropic-status" class="field-optional" style="margin-left: 8px"></span>
-        </div>
-      </details>
-
-      <!-- Manage 面板：已发条目 -->
-      <details class="manage-details" id="manage-details">
-        <summary>manage · 历史条目</summary>
+      <!-- ════════ 管理视图 ════════ -->
+      <div id="view-manage" class="view-panel hidden">
+        <p class="view-desc">这里是你发过的所有内容。点「编辑」修改，点「删除」移除。<b>删除不可撤销</b>，会一并删掉关联图片。</p>
         <div id="entries-list" class="entries-list">
-          <p class="admin-hint">点开时加载最新列表…</p>
+          <p class="admin-hint">加载中…</p>
         </div>
-      </details>
+      </div>
 
     </section>
 

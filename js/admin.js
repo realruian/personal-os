@@ -51,7 +51,7 @@ const statusEl = $('status');
 const anthropicKeyInput = $('anthropic-key-input');
 const saveAnthropicBtn = $('save-anthropic-btn');
 const anthropicStatus = $('anthropic-status');
-const manageDetails = $('manage-details');
+const viewTabs = document.querySelectorAll('.view-tab');
 const entriesList = $('entries-list');
 
 // ── GitHub API 封装 ──
@@ -425,8 +425,7 @@ async function publish() {
     );
 
     resetForm();
-    // 如果 manage 展开着，重新加载列表
-    if (manageDetails.open) loadEntries();
+    // 列表在切到「管理」视图时会自动拉取最新，这里无需手动刷新
   } catch (e) {
     console.error(e);
     const msg = String(e.message || e);
@@ -468,6 +467,8 @@ function resetForm() {
 function enterEditMode(entry, type) {
   editingEntry = { ts: entry.ts, type };
   publishBtn.textContent = '更新';
+  // 编辑表单在「发布」视图里，先切回去
+  switchView('post');
   // 插入编辑 banner
   let banner = document.querySelector('.edit-banner');
   if (!banner) {
@@ -475,7 +476,7 @@ function enterEditMode(entry, type) {
     banner.className = 'edit-banner';
     banner.innerHTML = `
       <span>正在编辑：${fmtDate(entry.ts)}</span>
-      <button type="button" class="edit-banner-cancel">cancel</button>
+      <button type="button" class="edit-banner-cancel">取消编辑</button>
     `;
     document.querySelector('.tab-switch').after(banner);
     banner.querySelector('.edit-banner-cancel').addEventListener('click', () => {
@@ -566,17 +567,17 @@ async function loadEntries() {
         ? `<img src="/${escapeHtml(e.url)}" alt="">`
         : (e.images && e.images[0] ? `<img src="/${escapeHtml(e.images[0].url)}" alt="">` : '');
       let kindLabel;
-      if (e.__type === 'thought') kindLabel = e.featured ? '★ thought' : 'thought';
-      else if (e.__type === 'writing') kindLabel = 'writing';
-      else kindLabel = e.type === 'gallery' ? 'gallery' : 'image';
+      if (e.__type === 'thought') kindLabel = e.featured ? '★ 置顶想法' : '💭 想法';
+      else if (e.__type === 'writing') kindLabel = '📄 文章';
+      else kindLabel = e.type === 'gallery' ? '🖼 画廊' : '🖼 图片';
       return `<div class="entry-row" data-ts="${escapeHtml(e.ts)}" data-kind="${escapeHtml(e.__type)}">
         <div class="entry-meta">
           <div class="entry-meta-time">${kindLabel} · ${fmtDate(e.ts)}</div>
           <div class="entry-meta-preview">${imgTag}${escapeHtml(preview) || '(无文字)'}</div>
         </div>
         <div class="entry-actions">
-          <button type="button" class="entry-action-btn" data-action="edit">edit</button>
-          <button type="button" class="entry-action-btn danger" data-action="delete">delete</button>
+          <button type="button" class="entry-action-btn" data-action="edit">编辑</button>
+          <button type="button" class="entry-action-btn danger" data-action="delete">删除</button>
         </div>
       </div>`;
     }).join('');
@@ -649,6 +650,16 @@ async function deleteEntry(entry, kind) {
   } catch (e) {
     showStatus('❌ 删除失败：\n\n' + String(e.message || e), 'error');
   }
+}
+
+// ── 视图切换：发布 / 管理 ──
+
+function switchView(view) {
+  viewTabs.forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  $('view-post').classList.toggle('hidden', view !== 'post');
+  $('view-manage').classList.toggle('hidden', view !== 'manage');
+  // 每次进入「管理」都拉一次最新列表，保证发/删后是最新状态
+  if (view === 'manage') loadEntries();
 }
 
 // ── 模式切换 ──
@@ -751,9 +762,9 @@ function initPost() {
     setTimeout(() => { anthropicStatus.textContent = ''; }, 3000);
   });
 
-  // manage 面板打开时加载
-  manageDetails.addEventListener('toggle', () => {
-    if (manageDetails.open) loadEntries();
+  // 一级视图切换：发布 / 管理
+  viewTabs.forEach(b => {
+    b.addEventListener('click', () => switchView(b.dataset.view));
   });
 
   // iOS 键盘遮挡：VisualViewport API 动态调 padding

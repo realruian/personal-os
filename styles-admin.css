@@ -200,9 +200,11 @@ input::placeholder {
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-primary {
+  background: var(--text);
+  color: var(--bg);
   border-color: var(--text);
 }
-.btn-primary:hover:not(:disabled) { background: var(--text); color: var(--bg); }
+.btn-primary:hover:not(:disabled) { opacity: 0.82; }
 
 .btn-ghost { color: var(--mid); }
 .btn-ghost:hover:not(:disabled) { color: var(--text); }
@@ -218,6 +220,42 @@ input::placeholder {
 }
 .status.success { border-color: var(--text); color: var(--text); }
 .status.error { border-color: #d04040; color: #d04040; }
+
+/* ── 一级视图切换：发布 / 管理 ── */
+.view-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.view-tab {
+  flex: 1;
+  background: transparent;
+  color: var(--mid);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease-out), color 160ms var(--ease-out), background 160ms var(--ease-out);
+  min-height: 48px;
+}
+.view-tab:hover { border-color: var(--text); color: var(--text); }
+.view-tab.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* 视图顶部一句话引导 */
+.view-desc {
+  color: var(--mid);
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.view-desc b { color: var(--text); font-weight: 500; }
+
+.view-panel.hidden { display: none; }
 
 /* Tab switch（thought / photo） */
 .tab-switch {
@@ -318,10 +356,11 @@ input[type="text"]::placeholder { color: var(--mid); }
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 14px;
+  border: 1px solid var(--line);
+  transition: border-color 160ms var(--ease-out);
 }
-.entry-row:last-child { border-bottom: none; }
+.entry-row:hover { border-color: var(--mid); }
 .entry-meta {
   flex: 1;
   min-width: 0;
@@ -366,7 +405,8 @@ input[type="text"]::placeholder { color: var(--mid); }
   min-height: 28px;
 }
 .entry-action-btn:hover { color: var(--text); border-color: var(--text); }
-.entry-action-btn.danger:hover { color: #d04040; border-color: #d04040; }
+.entry-action-btn.danger { color: #d04040; border-color: rgba(208, 64, 64, 0.5); }
+.entry-action-btn.danger:hover { color: #fff; background: #d04040; border-color: #d04040; }
 
 /* 编辑态提示 */
 .edit-banner {
