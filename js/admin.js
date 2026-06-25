@@ -567,9 +567,9 @@ async function loadEntries() {
         ? `<img src="/${escapeHtml(e.url)}" alt="">`
         : (e.images && e.images[0] ? `<img src="/${escapeHtml(e.images[0].url)}" alt="">` : '');
       let kindLabel;
-      if (e.__type === 'thought') kindLabel = e.featured ? '★ 置顶想法' : '💭 想法';
-      else if (e.__type === 'writing') kindLabel = '📄 文章';
-      else kindLabel = e.type === 'gallery' ? '🖼 画廊' : '🖼 图片';
+      if (e.__type === 'thought') kindLabel = e.featured ? '置顶想法' : '想法';
+      else if (e.__type === 'writing') kindLabel = '文章';
+      else kindLabel = e.type === 'gallery' ? '画廊' : '图片';
       return `<div class="entry-row" data-ts="${escapeHtml(e.ts)}" data-kind="${escapeHtml(e.__type)}">
         <div class="entry-meta">
           <div class="entry-meta-time">${kindLabel} · ${fmtDate(e.ts)}</div>

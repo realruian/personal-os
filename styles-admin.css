@@ -200,11 +200,9 @@ input::placeholder {
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-primary {
-  background: var(--text);
-  color: var(--bg);
   border-color: var(--text);
 }
-.btn-primary:hover:not(:disabled) { opacity: 0.82; }
+.btn-primary:hover:not(:disabled) { background: var(--text); color: var(--bg); }
 
 .btn-ghost { color: var(--mid); }
 .btn-ghost:hover:not(:disabled) { color: var(--text); }
@@ -241,9 +239,9 @@ input::placeholder {
 }
 .view-tab:hover { border-color: var(--text); color: var(--text); }
 .view-tab.active {
-  background: var(--text);
-  color: var(--bg);
+  color: var(--text);
   border-color: var(--text);
+  font-weight: 500;
 }
 
 /* 视图顶部一句话引导 */
