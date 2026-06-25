@@ -125,8 +125,14 @@ function fileToBase64(file) {
 }
 
 // 上传前压缩：resize 到最大 2000px + 转 WebP（不支持则 JPEG）。GIF 跳过，保留动图
+// 返回里带 w/h（最终图等比尺寸，比例即原图比例），写入 data.json 供前端预留占位防 CLS
 async function compressImage(file, maxDim = 2000, quality = 0.85) {
-  if (file.type === 'image/gif') return { blob: file, ext: 'gif' };
+  if (file.type === 'image/gif') {
+    // GIF 保留动图不重编码，但仍尝试读首帧尺寸用于防 CLS
+    let dim = {};
+    try { const b = await createImageBitmap(file); dim = { w: b.width, h: b.height }; b.close(); } catch (e) {}
+    return { blob: file, ext: 'gif', ...dim };
+  }
   const url = URL.createObjectURL(file);
   let img;
   try {
@@ -149,12 +155,12 @@ async function compressImage(file, maxDim = 2000, quality = 0.85) {
   URL.revokeObjectURL(url);
   const webp = await new Promise((res) => canvas.toBlob((b) => res(b), 'image/webp', quality));
   if (webp && webp.type === 'image/webp' && webp.size < file.size) {
-    return { blob: webp, ext: 'webp' };
+    return { blob: webp, ext: 'webp', w, h };
   }
   const jpeg = await new Promise((res) => canvas.toBlob((b) => res(b), 'image/jpeg', quality));
-  if (jpeg && jpeg.size < file.size) return { blob: jpeg, ext: 'jpg' };
-  // 压完反而更大（已经高度压缩过的小图），用原文件
-  return { blob: file, ext: guessExt(file) };
+  if (jpeg && jpeg.size < file.size) return { blob: jpeg, ext: 'jpg', w, h };
+  // 压完反而更大（已经高度压缩过的小图），用原文件（w/h 比例仍正确）
+  return { blob: file, ext: guessExt(file), w, h };
 }
 
 function strToBase64(str) {
@@ -271,12 +277,12 @@ async function uploadNewImages(ts) {
   for (let i = 0; i < selectedFiles.length; i++) {
     showStatus(`压缩图片 ${i + 1}/${selectedFiles.length}...`);
     const file = selectedFiles[i].file;
-    const { blob, ext } = await compressImage(file);
+    const { blob, ext, w, h } = await compressImage(file);
     const path = `assets/thoughts/${ts}-${i}.${ext}`;
     showStatus(`上传图片 ${i + 1}/${selectedFiles.length}（${Math.round(blob.size / 1024)}KB）...`);
     const b64 = await fileToBase64(blob);
     await ghPut(path, b64, null, `post: upload ${path}`);
-    uploaded.push({ url: path });
+    uploaded.push({ url: path, ...(w && h ? { w, h } : {}) });
   }
   return uploaded;
 }

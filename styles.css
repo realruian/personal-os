@@ -548,3 +548,16 @@ a:hover { color: #e0e0e0; text-decoration-color: #606060; }
   .gallery-footer { align-items: flex-start; }
   .gallery-footer .gallery-nav { padding-top: 4px; }
 }
+
+/* ──────────────────────────────────────────────
+   键盘焦点可见（a11y）
+   仅键盘聚焦时显示，鼠标点击不触发；克制实线描边走 token，贴合极简扁平
+   ────────────────────────────────────────────── */
+:focus-visible { outline: 1px solid var(--mid); outline-offset: 2px; }
+
+/* reduced-motion 兜底：补上此前遗漏的主题 token 过渡与氛围叠加层淡入
+   （col-1 / entry / gallery 已在各自处关闭，这里收口 body token 与 overlay） */
+@media (prefers-reduced-motion: reduce) {
+  body { transition: none; }
+  #leaves-overlay, #moon-overlay, #rain-overlay { transition: none; }
+}

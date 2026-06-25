@@ -73,12 +73,14 @@ function renderCol2(items) {
       html = `<div class="entry-text">${rawHtml || escapeHtml(rawText || '')}</div>`;
       if (Array.isArray(item.images) && item.images.length) {
         html += '<div class="thought-images">' +
-          item.images.map(im =>
-            `<div class="img-wrap">` +
-            `<img src="${escapeHtml(im.url)}" class="entry-img" loading="lazy" decoding="async" alt="">` +
-            `<div class="shader-overlay"></div>` +
-            `</div>`
-          ).join('') +
+          item.images.map(im => {
+            // 有宽高就写 width/height 属性，浏览器据此预留比例占位，防图片到达时 CLS 抖动
+            const dim = (im.w && im.h) ? ` width="${im.w}" height="${im.h}"` : '';
+            return `<div class="img-wrap">` +
+              `<img src="${escapeHtml(im.url)}" class="entry-img"${dim} loading="lazy" decoding="async" alt="">` +
+              `<div class="shader-overlay"></div>` +
+              `</div>`;
+          }).join('') +
           '</div>';
       }
     }
